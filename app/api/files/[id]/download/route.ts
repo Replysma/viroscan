@@ -75,7 +75,7 @@ export async function GET(request: Request, { params }: Params) {
       const folderName = path.basename(filePath.replace(/\/$/, ''))
       const zipBuffer  = outZip.toBuffer()
 
-      return new NextResponse(zipBuffer, {
+      return new NextResponse(new Uint8Array(zipBuffer), {
         headers: {
           'Content-Type':        'application/zip',
           'Content-Disposition': `attachment; filename="${folderName}.zip"`,
@@ -99,7 +99,7 @@ export async function GET(request: Request, { params }: Params) {
     const filename = path.basename(filePath)
     const mimeType = mime.lookup(filename) || 'application/octet-stream'
 
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(new Uint8Array(fileBuffer), {
       headers: {
         'Content-Type':        mimeType,
         'Content-Disposition': `attachment; filename="${filename}"`,
