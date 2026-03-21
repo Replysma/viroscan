@@ -92,7 +92,7 @@ export async function GET(request: Request, { params }: Params) {
     }
 
     if (isPdfFile(filename)) {
-      return new NextResponse(fileBuffer, {
+      return new NextResponse(new Uint8Array(fileBuffer), {
         headers: {
           'Content-Type':        'application/pdf',
           'Content-Disposition': `inline; filename="${filename}"`,
