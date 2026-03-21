@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SaaS – Abonnement Premium</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 2.5rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #4f46e5;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 99px;
+      margin-bottom: 1.25rem;
+    }
+
+    h1 { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; }
+
+    .price {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #818cf8;
+      margin: 1rem 0 0.25rem;
+    }
+    .price span { font-size: 1rem; color: #94a3b8; font-weight: 400; }
+
+    .features {
+      list-style: none;
+      text-align: left;
+      margin: 1.5rem 0;
+      space-y: 0.5rem;
+    }
+    .features li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+    .features li::before { content: "✓"; color: #4ade80; font-weight: 700; }
+
+    /* ─── Formulaire email ─── */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    input[type="email"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: #0f172a;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="email"]:focus { border-color: #6366f1; }
+
+    button {
+      width: 100%;
+      padding: 0.875rem 1.5rem;
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    button:hover:not(:disabled) { background: #4338ca; transform: translateY(-1px); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-portal {
+      background: transparent;
+      border: 1px solid #475569;
+      color: #94a3b8;
+      margin-top: 0.75rem;
+      font-size: 0.875rem;
+      padding: 0.625rem;
+    }
+    .btn-portal:hover:not(:disabled) { background: #1e293b; border-color: #6366f1; color: #e2e8f0; }
+
+    .error {
+      color: #f87171;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .note {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 1.25rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <span class="badge">⚡ Populaire</span>
+  <h1>Passer au Premium</h1>
+  <p style="color:#94a3b8;font-size:0.95rem;">Débloquez toutes les fonctionnalités</p>
+
+  <div class="price">9€ <span>/ mois</span></div>
+
+  <ul class="features">
+    <li>Jusqu'à 500 Mo par archive</li>
+    <li>Fichiers conservés 48 heures</li>
+    <li>Aperçu PDF &amp; toutes extensions</li>
+    <li>Historique étendu</li>
+    <li>Traitement prioritaire</li>
+    <li>Accès API (bientôt disponible)</li>
+  </ul>
+
+  <div class="form-group">
+    <input
+      type="email"
+      id="emailInput"
+      placeholder="votre@email.com"
+      autocomplete="email"
+    />
+
+    <button id="subscribeBtn" onclick="subscribe()">
+      S'abonner maintenant
+    </button>
+
+    <button class="btn-portal" id="portalBtn" onclick="openPortal()" style="display:none">
+      Gérer mon abonnement
+    </button>
+  </div>
+
+  <p id="errorMsg" class="error" style="display:none"></p>
+  <p class="note">Paiement sécurisé par Stripe · Annulable à tout moment</p>
+</div>
+
+<script>
+  // ─── Vérifier si l'utilisateur est déjà premium (sessionStorage exemple) ───
+  const storedEmail = sessionStorage.getItem('userEmail')
+  const isPremium   = sessionStorage.getItem('isPremium') === 'true'
+
+  if (storedEmail) {
+    document.getElementById('emailInput').value = storedEmail
+  }
+  if (isPremium) {
+    document.getElementById('portalBtn').style.display = 'block'
+  }
+
+  // ─── Créer une session Checkout ─────────────────────────────────────────────
+  async function subscribe() {
+    const email = document.getElementById('emailInput').value.trim()
+    const btn   = document.getElementById('subscribeBtn')
+    const errEl = document.getElementById('errorMsg')
+
+    errEl.style.display = 'none'
+
+    if (!email || !email.includes('@')) {
+      showError('Veuillez entrer un email valide.')
+      return
+    }
+
+    btn.disabled   = true
+    btn.classList.add('loading')
+    btn.textContent = 'Redirection vers Stripe'
+
+    try {
+      const res  = await fetch('/api/create-checkout-session', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || 'Erreur lors de la création du paiement.')
+      }
+
+      // Sauvegarder l'email pour pré-remplir après retour
+      sessionStorage.setItem('userEmail', email)
+
+      // ⚠️ SÉCURITÉ : on ne marque JAMAIS isPremium ici.
+      //    Seul le webhook Stripe met à jour la BDD.
+      window.location.href = data.url
+
+    } catch (err) {
+      showError(err.message)
+      btn.disabled  = false
+      btn.classList.remove('loading')
+      btn.textContent = 'S\'abonner maintenant'
+    }
+  }
+
+  // ─── Ouvrir le portail Stripe ────────────────────────────────────────────
+  async function openPortal() {
+    const email = document.getElementById('emailInput').value.trim()
+    const btn   = document.getElementById('portalBtn')
+
+    btn.disabled    = true
+    btn.textContent = 'Ouverture du portail...'
+
+    try {
+      const res  = await fetch('/api/create-billing-portal', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+
+      window.location.href = data.url
+    } catch (err) {
+      showError(err.message)
+    } finally {
+      btn.disabled    = false
+      btn.textContent = 'Gérer mon abonnement'
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg')
+    el.textContent  = msg
+    el.style.display = 'block'
+  }
+</script>
+</body>
+</html>

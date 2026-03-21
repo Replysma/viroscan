@@ -1,0 +1,32 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  name               String?
+
+  // ─── Stripe ───────────────────────────────────────────────────────────────
+  stripeCustomerId   String?   @unique  // customer_XXXX
+  subscriptionId     String?   @unique  // sub_XXXX
+  subscriptionStatus String?            // active | past_due | canceled | unpaid | trialing
+
+  // ─── Accès premium ────────────────────────────────────────────────────────
+  isPremium          Boolean   @default(false)
+  premiumSince       DateTime?
+  premiumUntil       DateTime? // optionnel : date de fin d'abonnement connue
+
+  // ─── Timestamps ───────────────────────────────────────────────────────────
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@map("users")
+}
