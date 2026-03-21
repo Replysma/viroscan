@@ -10,6 +10,7 @@
     "db:init": "node scripts/init-db.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1014.0",
     "@clerk/nextjs": "^7.0.6",
     "@vercel/blob": "^0.24.1",
     "@vercel/postgres": "^0.10.0",
@@ -22,6 +23,7 @@
     "mime-types": "^2.1.35",
     "next": "^15.2.4",
     "node-unrar-js": "^2.0.0",
+    "pg": "^8.20.0",
     "react": "^19",
     "react-dom": "^19",
     "stripe": "^20.4.1",
@@ -35,6 +37,7 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/mime-types": "^2.1.4",
     "@types/node": "^22",
+    "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/uuid": "^9.0.7",

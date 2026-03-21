@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   serverExternalPackages: ['adm-zip', 'node-unrar-js'],
+
   experimental: {
     serverActions: {
       bodySizeLimit: '500mb',

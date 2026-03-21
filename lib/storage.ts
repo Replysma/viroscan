@@ -1,36 +1,76 @@
 /**
- * Stockage des archives avec mode dual :
- * - Local (dev)       : système de fichiers local (tmp/zipview/)
- * - Production Vercel : Vercel Blob (via BLOB_READ_WRITE_TOKEN)
+ * Stockage des archives — mode triple :
  *
- * La détection est automatique selon la présence de BLOB_READ_WRITE_TOKEN.
+ *  1. S3_BUCKET_NAME   → S3-compatible (Cloudflare R2, AWS S3, Backblaze B2…)  ← Railway
+ *  2. BLOB_READ_WRITE_TOKEN → Vercel Blob                                        ← Vercel
+ *  3. Aucun            → Système de fichiers local (dev)
+ *
+ * Détection automatique selon les variables d'environnement présentes.
  */
 
-import fs from 'fs'
+import fs   from 'fs'
 import path from 'path'
 
-const USE_BLOB = !!process.env.BLOB_READ_WRITE_TOKEN
+const USE_S3   = !!process.env.S3_BUCKET_NAME
+const USE_BLOB = !USE_S3 && !!process.env.BLOB_READ_WRITE_TOKEN
 
 const STORAGE_ROOT = process.env.STORAGE_PATH
   ? path.resolve(process.env.STORAGE_PATH)
   : path.join(process.cwd(), 'tmp', 'zipview')
 
+// ─── Client S3 (lazy init) ────────────────────────────────────────────────────
+
+async function getS3Client() {
+  const { S3Client } = await import('@aws-sdk/client-s3')
+  return new S3Client({
+    region:      process.env.S3_REGION ?? 'auto',
+    endpoint:    process.env.S3_ENDPOINT_URL,          // ex: https://<id>.r2.cloudflarestorage.com
+    credentials: {
+      accessKeyId:     process.env.S3_ACCESS_KEY_ID     ?? '',
+      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY ?? '',
+    },
+    // Forcer path-style pour Cloudflare R2 et MinIO
+    forcePathStyle: !!process.env.S3_FORCE_PATH_STYLE,
+  })
+}
+
+function s3Key(archiveId: string, ext: string) {
+  return `archives/${archiveId}/original.${ext}`
+}
+
 // ─── Upload ───────────────────────────────────────────────────────────────────
 
 /**
- * Sauvegarde l'archive.
- * Retourne : URL blob (production) ou chemin fichier local (dev).
- * Accepte Buffer ou Uint8Array pour compatibilité avec les Web API types stricts.
+ * Sauvegarde l'archive uploadée.
+ * Retourne : clé S3 ("s3:..."), URL blob ou chemin fichier local.
  */
 export async function saveUploadedFile(
   archiveId: string,
   ext: string,
   buffer: Buffer | Uint8Array
 ): Promise<string> {
+
+  // ── Mode S3-compatible (Railway + Cloudflare R2 / AWS S3 / Backblaze B2) ──
+  if (USE_S3) {
+    const { PutObjectCommand } = await import('@aws-sdk/client-s3')
+    const client = await getS3Client()
+    const key    = s3Key(archiveId, ext)
+
+    await client.send(new PutObjectCommand({
+      Bucket:      process.env.S3_BUCKET_NAME!,
+      Key:         key,
+      Body:        buffer instanceof Buffer ? buffer : Buffer.from(buffer),
+      ContentType: ext === 'zip' ? 'application/zip' : 'application/x-rar-compressed',
+    }))
+
+    // On stocke le chemin S3 (pas une URL publique — récupéré via GetObject)
+    return `s3:${key}`
+  }
+
+  // ── Mode Vercel Blob ──────────────────────────────────────────────────────
   if (USE_BLOB) {
     const { put } = await import('@vercel/blob')
     const contentType = ext === 'zip' ? 'application/zip' : 'application/x-rar-compressed'
-    // Enveloppe dans Uint8Array pour compatibilité stricte avec BodyInit/ArrayBufferView
     const body = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer)
     const blob = await put(`archives/${archiveId}/original.${ext}`, body, {
       access: 'public',
@@ -40,8 +80,8 @@ export async function saveUploadedFile(
     return blob.url
   }
 
-  // Mode local
-  const dir = path.join(STORAGE_ROOT, archiveId)
+  // ── Mode local ─────────────────────────────────────────────────────────────
+  const dir      = path.join(STORAGE_ROOT, archiveId)
   fs.mkdirSync(dir, { recursive: true })
   const filePath = path.join(dir, `original.${ext}`)
   await fs.promises.writeFile(filePath, buffer)
@@ -51,18 +91,38 @@ export async function saveUploadedFile(
 // ─── Lecture ──────────────────────────────────────────────────────────────────
 
 /**
- * Récupère le contenu de l'archive depuis son storage_path.
- * Gère les deux modes : URL blob ou chemin local.
- * Retourne toujours un Buffer Node.js (compatible avec AdmZip, unrar-js, etc.)
+ * Récupère le contenu binaire de l'archive.
+ * Gère les trois modes : S3 (s3:key), URL blob (https://…), chemin local.
  */
 export async function getArchiveBuffer(storagePath: string): Promise<Buffer> {
+
+  // ── S3 ────────────────────────────────────────────────────────────────────
+  if (storagePath.startsWith('s3:')) {
+    const { GetObjectCommand } = await import('@aws-sdk/client-s3')
+    const client = await getS3Client()
+    const key    = storagePath.slice(3)   // retire le préfixe "s3:"
+
+    const response = await client.send(new GetObjectCommand({
+      Bucket: process.env.S3_BUCKET_NAME!,
+      Key:    key,
+    }))
+
+    const stream  = response.Body as NodeJS.ReadableStream
+    const chunks: Buffer[] = []
+    for await (const chunk of stream) {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+    }
+    return Buffer.concat(chunks)
+  }
+
+  // ── URL HTTP (Vercel Blob ou tout CDN public) ─────────────────────────────
   if (storagePath.startsWith('http://') || storagePath.startsWith('https://')) {
     const response = await fetch(storagePath)
-    if (!response.ok) throw new Error(`Erreur blob : ${response.status}`)
-    const arrayBuffer = await response.arrayBuffer()
-    return Buffer.from(arrayBuffer)
+    if (!response.ok) throw new Error(`Erreur blob HTTP : ${response.status}`)
+    return Buffer.from(await response.arrayBuffer())
   }
-  // Lecture locale : retourne déjà un Buffer Node.js
+
+  // ── Chemin local ──────────────────────────────────────────────────────────
   return fs.promises.readFile(storagePath)
 }
 
@@ -70,13 +130,24 @@ export async function getArchiveBuffer(storagePath: string): Promise<Buffer> {
 
 export async function deleteArchive(storagePath: string): Promise<void> {
   try {
+    if (storagePath.startsWith('s3:')) {
+      const { DeleteObjectCommand } = await import('@aws-sdk/client-s3')
+      const client = await getS3Client()
+      await client.send(new DeleteObjectCommand({
+        Bucket: process.env.S3_BUCKET_NAME!,
+        Key:    storagePath.slice(3),
+      }))
+      return
+    }
+
     if (storagePath.startsWith('http://') || storagePath.startsWith('https://')) {
       const { del } = await import('@vercel/blob')
       await del(storagePath)
-    } else {
-      const dir = path.dirname(storagePath)
-      if (fs.existsSync(dir)) fs.rmSync(dir, { recursive: true, force: true })
+      return
     }
+
+    const dir = path.dirname(storagePath)
+    if (fs.existsSync(dir)) fs.rmSync(dir, { recursive: true, force: true })
   } catch (err) {
     console.warn('[storage] Erreur suppression :', err)
   }
@@ -87,11 +158,13 @@ export async function deleteArchive(storagePath: string): Promise<void> {
 export async function cleanupExpiredArchives(): Promise<void> {
   try {
     const { archiveRepo } = await import('./db')
+    const { USE_POSTGRES, query } = await import('./pg-adapter')
 
-    if (USE_BLOB) {
-      // Récupérer les URLs blob des archives expirées avant suppression
-      const { sql } = await import('@vercel/postgres')
-      const { rows } = await sql`SELECT id, storage_path FROM archives WHERE expires_at < NOW()`
+    if (USE_POSTGRES) {
+      // Récupérer les storage_paths avant suppression DB
+      const { rows } = await query(
+        "SELECT id, storage_path FROM archives WHERE expires_at < NOW()"
+      )
       if (rows.length > 0) {
         await Promise.allSettled(rows.map((r: any) => deleteArchive(r.storage_path)))
       }
@@ -116,9 +189,8 @@ export async function cleanupExpiredArchives(): Promise<void> {
   }
 }
 
-// ─── Utilitaires de sécurité (inchangés) ─────────────────────────────────────
+// ─── Utilitaires de sécurité ──────────────────────────────────────────────────
 
-// Accepte Buffer ou Uint8Array (magic byte detection via index, compatible Web API)
 export function detectFileType(buffer: Buffer | Uint8Array): 'zip' | 'rar' | null {
   if (buffer[0] === 0x50 && buffer[1] === 0x4b && buffer[2] === 0x03 && buffer[3] === 0x04) return 'zip'
   if (buffer[0] === 0x52 && buffer[1] === 0x61 && buffer[2] === 0x72 &&
