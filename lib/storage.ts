@@ -20,16 +20,19 @@ const STORAGE_ROOT = process.env.STORAGE_PATH
 /**
  * Sauvegarde l'archive.
  * Retourne : URL blob (production) ou chemin fichier local (dev).
+ * Accepte Buffer ou Uint8Array pour compatibilité avec les Web API types stricts.
  */
 export async function saveUploadedFile(
   archiveId: string,
   ext: string,
-  buffer: Buffer
+  buffer: Buffer | Uint8Array
 ): Promise<string> {
   if (USE_BLOB) {
     const { put } = await import('@vercel/blob')
     const contentType = ext === 'zip' ? 'application/zip' : 'application/x-rar-compressed'
-    const blob = await put(`archives/${archiveId}/original.${ext}`, buffer, {
+    // Enveloppe dans Uint8Array pour compatibilité stricte avec BodyInit/ArrayBufferView
+    const body = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer)
+    const blob = await put(`archives/${archiveId}/original.${ext}`, body, {
       access: 'public',
       addRandomSuffix: false,
       contentType,
@@ -50,13 +53,16 @@ export async function saveUploadedFile(
 /**
  * Récupère le contenu de l'archive depuis son storage_path.
  * Gère les deux modes : URL blob ou chemin local.
+ * Retourne toujours un Buffer Node.js (compatible avec AdmZip, unrar-js, etc.)
  */
 export async function getArchiveBuffer(storagePath: string): Promise<Buffer> {
   if (storagePath.startsWith('http://') || storagePath.startsWith('https://')) {
     const response = await fetch(storagePath)
     if (!response.ok) throw new Error(`Erreur blob : ${response.status}`)
-    return Buffer.from(await response.arrayBuffer())
+    const arrayBuffer = await response.arrayBuffer()
+    return Buffer.from(arrayBuffer)
   }
+  // Lecture locale : retourne déjà un Buffer Node.js
   return fs.promises.readFile(storagePath)
 }
 
@@ -112,7 +118,8 @@ export async function cleanupExpiredArchives(): Promise<void> {
 
 // ─── Utilitaires de sécurité (inchangés) ─────────────────────────────────────
 
-export function detectFileType(buffer: Buffer): 'zip' | 'rar' | null {
+// Accepte Buffer ou Uint8Array (magic byte detection via index, compatible Web API)
+export function detectFileType(buffer: Buffer | Uint8Array): 'zip' | 'rar' | null {
   if (buffer[0] === 0x50 && buffer[1] === 0x4b && buffer[2] === 0x03 && buffer[3] === 0x04) return 'zip'
   if (buffer[0] === 0x52 && buffer[1] === 0x61 && buffer[2] === 0x72 &&
       buffer[3] === 0x21 && buffer[4] === 0x1a && buffer[5] === 0x07) return 'rar'

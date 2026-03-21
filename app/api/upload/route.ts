@@ -12,7 +12,8 @@ import { saveUploadedFile, detectFileType, isSuspiciousFile, cleanupExpiredArchi
 import { parseZip } from '@/lib/zipParser'
 import { parseRar } from '@/lib/rarParser'
 
-// Limite de durée max pour la fonction serverless Vercel (en secondes)
+// Runtime Node.js requis : Buffer, AdmZip, unrar, fs
+export const runtime    = 'nodejs'
 export const maxDuration = 60
 
 const FREE_LIMIT    = parseInt(process.env.NEXT_PUBLIC_MAX_FREE_SIZE_MB    || '50')  * 1024 * 1024

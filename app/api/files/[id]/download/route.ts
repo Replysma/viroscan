@@ -14,6 +14,7 @@ import { extractFileFromZip } from '@/lib/zipParser'
 import { extractFileFromRar } from '@/lib/rarParser'
 import { ArchiveEntry } from '@/types'
 
+export const runtime    = 'nodejs'
 export const maxDuration = 60
 
 interface Params { params: Promise<{ id: string }> }

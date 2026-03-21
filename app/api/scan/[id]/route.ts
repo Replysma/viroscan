@@ -10,6 +10,7 @@ import { scanArchive } from '@/lib/scanner'
 import { getAuth } from '@/lib/auth'
 import { getRateLimitIdentifier, checkRateLimit, consumeRateLimit } from '@/lib/rateLimit'
 
+export const runtime    = 'nodejs'
 export const maxDuration = 60
 
 interface Params { params: Promise<{ id: string }> }

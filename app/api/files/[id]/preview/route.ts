@@ -12,6 +12,7 @@ import { getArchiveBuffer, isSafeEntryPath } from '@/lib/storage'
 import { extractFileFromZip, isTextFile, isImageFile, isPdfFile } from '@/lib/zipParser'
 import { extractFileFromRar } from '@/lib/rarParser'
 
+export const runtime    = 'nodejs'
 export const maxDuration = 30
 
 const TEXT_PREVIEW_LIMIT  = 500  * 1024   // 500 Ko

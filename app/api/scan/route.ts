@@ -14,6 +14,7 @@ import { getAuth } from '@/lib/auth'
 import { getRateLimitIdentifier, checkRateLimit, consumeRateLimit } from '@/lib/rateLimit'
 import path from 'path'
 
+export const runtime    = 'nodejs'
 export const maxDuration = 60
 
 const SUSPICIOUS_EXTS = new Set([
