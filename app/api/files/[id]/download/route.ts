@@ -47,7 +47,7 @@ export async function GET(request: Request, { params }: Params) {
       if (!filePath) {
         // Télécharger l'archive originale entière
         const mimeType = archive.type === 'zip' ? 'application/zip' : 'application/x-rar-compressed'
-        return new NextResponse(archiveBuffer, {
+        return new NextResponse(new Uint8Array(archiveBuffer), {
           headers: {
             'Content-Type':        mimeType,
             'Content-Disposition': `attachment; filename="${archive.name}"`,
