@@ -82,7 +82,11 @@ export async function POST(request: Request) {
       dir_count:    parseResult.dirCount,
       storage_path: blobUrl,             // URL Vercel Blob
       tree_json:    JSON.stringify(parseResult.tree),
-      expires_at:   expiresAt,
+      expires_at:       expiresAt,
+      scan_status:      "pending",
+      scan_result:      null,
+      scan_started_at:  null,
+      scan_finished_at: null,
     })
 
     return NextResponse.json({
