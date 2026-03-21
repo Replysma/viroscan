@@ -1,30 +1,83 @@
-# Dependencies
+# ─── Dependencies ─────────────────────────────────────────────────────────────
 node_modules/
 .pnp
 .pnp.js
+.yarn/install-state.gz
 
-# Next.js
+# ─── Next.js ──────────────────────────────────────────────────────────────────
 .next/
 out/
 build/
+.swc/
 
-# Environment
+# ─── Variables d'environnement (JAMAIS committer les clés secrètes) ───────────
 .env
 .env.local
 .env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+# Autoriser uniquement le fichier exemple public
+!.env.example
 
-# Database & uploads
+# ─── Base de données locale (SQLite dev) ──────────────────────────────────────
 tmp/
 *.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
 
-# OS
-.DS_Store
-Thumbs.db
+# ─── Fichiers uploadés (stockage local dev) ───────────────────────────────────
+uploads/
+storage/
+public/uploads/
 
-# Logs
-*.log
-npm-debug.log*
+# ─── Vercel ───────────────────────────────────────────────────────────────────
+.vercel/
 
-# TypeScript
+# ─── TypeScript ───────────────────────────────────────────────────────────────
 *.tsbuildinfo
 next-env.d.ts
+
+# ─── Tests & Coverage ─────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+*.lcov
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ─── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ─── IDE & Éditeurs ───────────────────────────────────────────────────────────
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# ─── Misc ─────────────────────────────────────────────────────────────────────
+*.pem
+.cache/
+dist/
