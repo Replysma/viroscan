@@ -103,7 +103,7 @@ export default function ScanPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] flex flex-col">
+    <div className="min-h-screen bg-[#050505] flex flex-col">
       <Header />
 
       {upgrade.show && (
@@ -121,7 +121,7 @@ export default function ScanPage() {
           {/* Back link */}
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 text-sm text-[#666666] hover:text-[#B3B3B3] transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-[#555555] hover:text-[#AAAAAA] transition-colors"
           >
             <ArrowLeft size={14} /> Retour au tableau de bord
           </Link>
@@ -129,12 +129,12 @@ export default function ScanPage() {
           {/* Title */}
           <div className="space-y-1">
             <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-              <div className="w-9 h-9 bg-[rgba(212,160,23,0.08)] border border-[rgba(212,160,23,0.25)] rounded-xl flex items-center justify-center">
-                <ShieldCheck size={18} className="text-[#D4A017]" />
+              <div className="w-9 h-9 bg-[rgba(225,173,1,0.08)] border border-[rgba(225,173,1,0.25)] rounded-xl flex items-center justify-center">
+                <ShieldCheck size={18} className="text-[#E1AD01]" />
               </div>
               Analyse de sécurité
             </h1>
-            <p className="text-[#666666] text-sm pl-12">
+            <p className="text-[#555555] text-sm pl-12">
               Déposez n'importe quel fichier pour détecter les menaces potentielles.
             </p>
           </div>
@@ -149,8 +149,8 @@ export default function ScanPage() {
               ${isDragging
                 ? 'drag-over'
                 : status === 'scanning'
-                  ? 'border-[#2A2A2A] cursor-default'
-                  : 'border-[#2A2A2A] hover:border-[#3A3A3A] hover:bg-[#121212]'
+                  ? 'border-[#1A1A1A] cursor-default'
+                  : 'border-[#1A1A1A] hover:border-[#3A3A3A] hover:bg-[#0D0D0D]'
               }`}
           >
             <input
@@ -162,30 +162,30 @@ export default function ScanPage() {
 
             {!file ? (
               <div className="space-y-3">
-                <div className="w-14 h-14 bg-[rgba(212,160,23,0.08)] border border-[rgba(212,160,23,0.2)] rounded-2xl flex items-center justify-center mx-auto">
-                  <FileSearch size={24} className="text-[#D4A017]" />
+                <div className="w-14 h-14 bg-[rgba(225,173,1,0.08)] border border-[rgba(225,173,1,0.2)] rounded-2xl flex items-center justify-center mx-auto">
+                  <FileSearch size={24} className="text-[#E1AD01]" />
                 </div>
                 <div>
                   <p className="font-medium text-white">Déposez votre fichier ici</p>
-                  <p className="text-sm text-[#666666] mt-1">
-                    ou <span className="text-[#D4A017]">cliquez pour parcourir</span>
+                  <p className="text-sm text-[#555555] mt-1">
+                    ou <span className="text-[#E1AD01]">cliquez pour parcourir</span>
                   </p>
                 </div>
                 <p className="text-xs text-[#444444]">Tous formats acceptés · Max 500 Mo</p>
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[#1A1A1A] rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Upload size={18} className="text-[#666666]" />
+                <div className="w-10 h-10 bg-[#131313] rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Upload size={18} className="text-[#555555]" />
                 </div>
                 <div className="flex-1 text-left min-w-0">
                   <p className="text-sm font-medium text-white truncate">{file.name}</p>
-                  <p className="text-xs text-[#666666]">{formatBytes(file.size)}</p>
+                  <p className="text-xs text-[#555555]">{formatBytes(file.size)}</p>
                 </div>
                 {status === 'idle' && (
                   <button
                     onClick={e => { e.stopPropagation(); reset() }}
-                    className="text-[#555555] hover:text-[#B3B3B3] flex-shrink-0"
+                    className="text-[#555555] hover:text-[#AAAAAA] flex-shrink-0"
                   >
                     <X size={16} />
                   </button>
@@ -197,9 +197,9 @@ export default function ScanPage() {
           {/* Quota indicator (plan gratuit uniquement) */}
           {planLoaded && !isPremium && status === 'idle' && (
             <div className="flex items-center justify-between text-xs px-1">
-              <span className="text-[#666666]">
+              <span className="text-[#555555]">
                 Analyses aujourd'hui :&nbsp;
-                <span className={remaining === 0 ? 'text-red-400 font-semibold' : 'text-[#B3B3B3] font-semibold'}>
+                <span className={remaining === 0 ? 'text-red-400 font-semibold' : 'text-[#AAAAAA] font-semibold'}>
                   {count ?? 0}/{limit ?? 3}
                 </span>
               </span>
@@ -212,10 +212,10 @@ export default function ScanPage() {
           {/* Scan button — bloqué si quota atteint */}
           {file && status === 'idle' && (
             isLimitReached ? (
-              <div className="rounded-xl border border-[#2A2A2A] bg-[#121212] p-4 flex items-center justify-between gap-3">
+              <div className="rounded-xl border border-[#1A1A1A] bg-[#0D0D0D] p-4 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 min-w-0">
                   <Lock size={16} className="text-[#555555] flex-shrink-0" />
-                  <span className="text-sm text-[#666666] truncate">
+                  <span className="text-sm text-[#555555] truncate">
                     Limite quotidienne atteinte ({count}/{limit}). Passez au plan Pro pour continuer.
                   </span>
                 </div>
@@ -239,11 +239,11 @@ export default function ScanPage() {
 
           {/* Scanning state */}
           {status === 'scanning' && (
-            <div className="rounded-2xl border border-[rgba(212,160,23,0.2)] bg-[rgba(212,160,23,0.05)] p-5 flex items-center gap-4">
-              <Loader2 size={24} className="text-[#D4A017] animate-spin flex-shrink-0" />
+            <div className="rounded-2xl border border-[rgba(225,173,1,0.2)] bg-[rgba(225,173,1,0.05)] p-5 flex items-center gap-4">
+              <Loader2 size={24} className="text-[#E1AD01] animate-spin flex-shrink-0" />
               <div>
-                <p className="font-medium text-[#D4A017]">Analyse en cours...</p>
-                <p className="text-sm text-[#666666] mt-0.5">Vérification des signatures et du contenu</p>
+                <p className="font-medium text-[#E1AD01]">Analyse en cours...</p>
+                <p className="text-sm text-[#555555] mt-0.5">Vérification des signatures et du contenu</p>
               </div>
             </div>
           )}
@@ -252,7 +252,7 @@ export default function ScanPage() {
           {status === 'error' && (
             <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-5 space-y-3">
               <p className="text-red-400 font-medium">{error}</p>
-              <button onClick={reset} className="text-sm text-[#B3B3B3] hover:text-white underline">
+              <button onClick={reset} className="text-sm text-[#AAAAAA] hover:text-white underline">
                 Réessayer
               </button>
             </div>
@@ -288,8 +288,8 @@ export default function ScanPage() {
                       onClick={() => setUpgrade({ show: true, reason: 'paywall', remaining: 0, limit: 3 })}
                       className="w-full bg-black/20 rounded-xl px-4 py-3 text-sm flex items-center gap-2 hover:bg-black/30 transition-colors"
                     >
-                      <Lock size={14} className="text-[#D4A017] flex-shrink-0" />
-                      <span className="text-[#D4A017] font-medium">
+                      <Lock size={14} className="text-[#E1AD01] flex-shrink-0" />
+                      <span className="text-[#E1AD01] font-medium">
                         {result.threatsFound} menace{result.threatsFound > 1 ? 's' : ''} détectée{result.threatsFound > 1 ? 's' : ''} — Passez au Premium pour voir les détails
                       </span>
                     </button>
@@ -331,16 +331,16 @@ function resultTitle(s: 'clean' | 'infected' | 'suspicious') {
 
 function resultIcon(s: 'clean' | 'infected' | 'suspicious') {
   switch (s) {
-    case 'clean':      return <ShieldCheck size={32} className="text-[#D4A017] flex-shrink-0" />
+    case 'clean':      return <ShieldCheck size={32} className="text-[#E1AD01] flex-shrink-0" />
     case 'infected':   return <ShieldX     size={32} className="text-red-400 flex-shrink-0" />
-    case 'suspicious': return <ShieldAlert size={32} className="text-[#F2C94C] flex-shrink-0" />
+    case 'suspicious': return <ShieldAlert size={32} className="text-[#FFCC00] flex-shrink-0" />
   }
 }
 
 function resultCardClass(s: 'clean' | 'infected' | 'suspicious') {
   switch (s) {
-    case 'clean':      return 'border-[rgba(212,160,23,0.3)] bg-[rgba(212,160,23,0.06)] text-[#F2C94C]'
+    case 'clean':      return 'border-[rgba(225,173,1,0.3)] bg-[rgba(225,173,1,0.06)] text-[#FFCC00]'
     case 'infected':   return 'border-red-500/25 bg-red-500/5 text-red-200'
-    case 'suspicious': return 'border-[rgba(242,201,76,0.3)] bg-[rgba(242,201,76,0.06)] text-[#F2C94C]'
+    case 'suspicious': return 'border-[rgba(242,201,76,0.3)] bg-[rgba(242,201,76,0.06)] text-[#FFCC00]'
   }
 }

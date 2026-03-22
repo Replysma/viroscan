@@ -15,7 +15,7 @@ const hasClerkKeys =
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const content = (
     <html lang="en" className="dark">
-      <body className="min-h-screen bg-[#0a0f1e]">
+      <body className="min-h-screen">
         {children}
       </body>
     </html>
@@ -27,22 +27,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider
       appearance={{
         variables: {
-          colorPrimary: '#6366f1',
-          colorBackground: '#0f172a',
-          colorInputBackground: '#1e293b',
-          colorInputText: '#f1f5f9',
-          borderRadius: '0.75rem',
-          fontFamily: 'Inter, system-ui, sans-serif',
+          colorPrimary:        '#E1AD01',
+          colorBackground:     '#050505',
+          colorInputBackground:'#0D0D0D',
+          colorInputText:      '#FFFFFF',
+          borderRadius:        '0.75rem',
+          fontFamily:          'Inter, system-ui, sans-serif',
         },
         elements: {
-          card: 'bg-slate-900 border border-slate-700/50 shadow-2xl',
-          headerTitle: 'text-slate-100',
-          headerSubtitle: 'text-slate-400',
-          formButtonPrimary: 'bg-indigo-600 hover:bg-indigo-500',
-          footerActionLink: 'text-indigo-400 hover:text-indigo-300',
-          formFieldLabel: 'text-slate-400',
-          dividerText: 'text-slate-500',
-          socialButtonsBlockButton: 'border-slate-600 hover:bg-slate-700 text-slate-200',
+          card:                    'shadow-2xl',
+          formButtonPrimary:       'bg-[#E1AD01] hover:bg-[#FFCC00] text-black',
+          footerActionLink:        'text-[#E1AD01] hover:text-[#FFCC00]',
+          socialButtonsBlockButton:'border-[#1A1A1A] hover:bg-[#131313] text-[#AAAAAA]',
         },
       }}
     >

@@ -24,11 +24,11 @@ export default function SocialProof() {
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-6 py-6">
-      <Stat icon={<FileSearch size={16} className="text-[#D4A017]" />} value={files}   label="fichiers analysés aujourd'hui" />
-      <div className="w-px h-8 bg-[#242424] hidden sm:block" />
-      <Stat icon={<Users      size={16} className="text-[#D4A017]" />} value={users}   label="utilisateurs actifs" />
-      <div className="w-px h-8 bg-[#242424] hidden sm:block" />
-      <Stat icon={<Shield     size={16} className="text-[#D4A017]" />} value={threats} label="menaces détectées cette semaine" />
+      <Stat icon={<FileSearch size={16} className="text-[#E1AD01]" />} value={files}   label="fichiers analysés aujourd'hui" />
+      <div className="w-px h-8 bg-[#1A1A1A] hidden sm:block" />
+      <Stat icon={<Users      size={16} className="text-[#E1AD01]" />} value={users}   label="utilisateurs actifs" />
+      <div className="w-px h-8 bg-[#1A1A1A] hidden sm:block" />
+      <Stat icon={<Shield     size={16} className="text-[#E1AD01]" />} value={threats} label="menaces détectées cette semaine" />
     </div>
   )
 }
@@ -38,7 +38,7 @@ function Stat({ icon, value, label }: { icon: React.ReactNode; value: string; la
     <div className="flex items-center gap-2 text-sm">
       {icon}
       <span className="font-bold text-white">{value}</span>
-      <span className="text-[#666666]">{label}</span>
+      <span className="text-[#555555]">{label}</span>
     </div>
   )
 }

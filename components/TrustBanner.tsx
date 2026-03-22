@@ -9,11 +9,11 @@ const GUARANTEES = [
 
 export default function TrustBanner() {
   return (
-    <div className="border border-[#242424] rounded-xl bg-[#0D0D0D] px-6 py-4">
+    <div className="border border-[#1A1A1A] rounded-xl bg-[#0D0D0D] px-6 py-4">
       <div className="flex flex-wrap items-center justify-center gap-6">
         {GUARANTEES.map((g) => (
           <div key={g.label} className="flex items-center gap-2">
-            <span className="text-[#D4A017]">{g.icon}</span>
+            <span className="text-[#E1AD01]">{g.icon}</span>
             <div>
               <span className="text-sm font-medium text-white">{g.label}</span>
               <span className="text-xs text-[#555555] ml-1.5 hidden sm:inline">{g.desc}</span>

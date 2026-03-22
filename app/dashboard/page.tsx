@@ -7,11 +7,11 @@ import FileTree from '@/components/FileTree'
 import FilePreview from '@/components/FilePreview'
 import HistoryPanel from '@/components/HistoryPanel'
 import { ArchiveInfo, ArchiveEntry } from '@/types'
-import { Archive, History, Upload, ShieldCheck } from 'lucide-react'
+import { Archive, History, Upload, ShieldCheck, Eye } from 'lucide-react'
 import ScanBadge from '@/components/ScanBadge'
 import Link from 'next/link'
 
-type Panel = 'upload' | 'history'
+type Panel = 'upload' | 'history' | 'secure-info'
 
 export default function DashboardPage() {
   const [activePanel, setActivePanel] = useState<Panel>('upload')
@@ -48,12 +48,12 @@ export default function DashboardPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] flex flex-col">
+    <div className="min-h-screen bg-black flex flex-col">
       <Header />
 
       <div className="flex-1 flex overflow-hidden" style={{ height: 'calc(100vh - 64px)' }}>
         {/* Sidebar */}
-        <aside className="w-56 border-r border-[#242424] flex flex-col bg-[#0A0A0A] flex-shrink-0">
+        <aside className="w-56 border-r border-white/[0.05] flex flex-col bg-[#060606] flex-shrink-0">
           <div className="p-3 space-y-1">
             <button
               onClick={() => setActivePanel('upload')}
@@ -73,19 +73,25 @@ export default function DashboardPage() {
             >
               <History size={16} /> Historique
             </button>
+            <button
+              onClick={() => setActivePanel('secure-info')}
+              className={`nav-item ${activePanel === 'secure-info' ? 'active' : ''}`}
+            >
+              <Eye size={16} /> Aperçu Sécurisé
+            </button>
           </div>
 
           {/* Archive info in sidebar */}
           {currentArchive && (
-            <div className="p-3 mt-2 border-t border-[#242424]">
-              <p className="text-xs text-[#666666] uppercase tracking-wider mb-2">En cours</p>
+            <div className="p-3 mt-2 border-t border-white/[0.04]">
+              <p className="text-xs text-[#444444] uppercase tracking-wider mb-2">En cours</p>
               <div className="card p-3 space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <Archive size={14} className="text-[#D4A017] flex-shrink-0" />
-                  <span className="text-xs text-[#B3B3B3] truncate">{currentArchive.name}</span>
+                  <Archive size={14} className="text-[#FFD700] flex-shrink-0" />
+                  <span className="text-xs text-[#AAAAAA] truncate">{currentArchive.name}</span>
                 </div>
-                <p className="text-xs text-[#666666]">{currentArchive.fileCount} fichier{currentArchive.fileCount > 1 ? 's' : ''}</p>
-                <p className="text-xs text-[#444444] uppercase font-medium mb-1">
+                <p className="text-xs text-[#555555]">{currentArchive.fileCount} fichier{currentArchive.fileCount > 1 ? 's' : ''}</p>
+                <p className="text-xs text-[#333333] uppercase font-medium mb-1">
                   {currentArchive.type.toUpperCase()}
                 </p>
                 <ScanBadge
@@ -108,10 +114,12 @@ export default function DashboardPage() {
                 onLoad={handleLoadFromHistory}
               />
             </div>
+          ) : activePanel === 'secure-info' ? (
+            <SecurePreviewInfo />
           ) : (
             <>
               {/* Left: upload + tree */}
-              <div className={`flex flex-col border-r border-[#242424] overflow-hidden transition-all
+              <div className={`flex flex-col border-r border-white/[0.05] overflow-hidden transition-all
                 ${currentArchive ? 'w-80 flex-shrink-0' : 'flex-1'}`}>
 
                 {!currentArchive ? (
@@ -126,7 +134,7 @@ export default function DashboardPage() {
                 ) : (
                   <>
                     {/* Compact uploader */}
-                    <div className="p-3 border-b border-[#242424]">
+                    <div className="p-3 border-b border-white/[0.05]">
                       <FileUploader
                         sessionId={sessionId}
                         onSuccess={handleUploadSuccess}
@@ -157,10 +165,10 @@ export default function DashboardPage() {
                   ) : (
                     <div className="flex-1 flex flex-col items-center justify-center gap-6 p-8">
                       <div className="text-center space-y-3">
-                        <div className="w-16 h-16 bg-[#1A1A1A] rounded-2xl flex items-center justify-center mx-auto">
-                          <Archive size={28} className="text-[#444444]" />
+                        <div className="w-16 h-16 bg-white/[0.03] border border-white/[0.06] rounded-3xl flex items-center justify-center mx-auto">
+                          <Archive size={28} className="text-[#333333]" />
                         </div>
-                        <p className="text-[#666666] text-sm">Sélectionnez un fichier pour le prévisualiser</p>
+                        <p className="text-[#444444] text-sm">Sélectionnez un fichier pour le prévisualiser</p>
                       </div>
                       {/* Badge scan complet */}
                       <div className="w-full max-w-sm">
@@ -177,6 +185,63 @@ export default function DashboardPage() {
             </>
           )}
         </main>
+      </div>
+    </div>
+  )
+}
+
+// ─── Panel d'info Aperçu Sécurisé ────────────────────────────────────────────
+
+function SecurePreviewInfo() {
+  const formats = [
+    { label: 'Word',   exts: 'DOCX, DOC',      icon: '📝', detail: 'Converti en HTML côté serveur via Mammoth.js' },
+    { label: 'Excel',  exts: 'XLSX, XLS, ODS, CSV', icon: '📊', detail: 'Rendu en tableau HTML via SheetJS' },
+    { label: 'PDF',    exts: 'PDF',             icon: '📄', detail: 'Affiché via iframe sandboxée (no scripts)' },
+    { label: 'Code',   exts: '50+ extensions',  icon: '💻', detail: 'Texte brut avec numérotation des lignes' },
+    { label: 'Images', exts: 'JPG, PNG, WebP, SVG, GIF…', icon: '🖼️', detail: 'Rendu natif, referrer bloqué' },
+  ]
+
+  return (
+    <div className="flex-1 overflow-auto p-8">
+      <div className="max-w-2xl mx-auto space-y-8">
+        <div>
+          <h2 className="text-xl font-bold text-white mb-2">Mode Aperçu Sécurisé</h2>
+          <p className="text-[#666666] text-sm">
+            Tous les fichiers sont prévisualisés sans jamais être exécutés sur votre machine.
+            Les documents Office sont convertis côté serveur en HTML inerte avant d'être affichés.
+          </p>
+        </div>
+
+        <div className="grid gap-3">
+          {formats.map(f => (
+            <div key={f.label} className="card p-4 flex items-start gap-4">
+              <span className="text-2xl">{f.icon}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-white font-medium text-sm">{f.label}</span>
+                  <span className="text-[10px] text-[#555555] bg-white/[0.04] px-2 py-0.5 rounded font-mono">{f.exts}</span>
+                </div>
+                <p className="text-xs text-[#444444]">{f.detail}</p>
+              </div>
+              <span className="text-emerald-400 text-xs flex-shrink-0">🔒 Sûr</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 space-y-3">
+          <p className="text-xs font-semibold text-[#FFD700] uppercase tracking-wider">Garanties de sécurité</p>
+          <ul className="space-y-2 text-xs text-[#666666]">
+            <li>• Les documents Office ne sont <strong className="text-white">jamais exécutés</strong> — convertis en HTML pur côté serveur</li>
+            <li>• L'HTML est <strong className="text-white">sanitisé</strong> (scripts, onclick, iframes supprimés)</li>
+            <li>• Rendu dans un <code className="bg-white/[0.04] px-1 rounded">{'<iframe sandbox="">'}</code> — aucun JS ne peut s'exécuter</li>
+            <li>• <code className="bg-white/[0.04] px-1 rounded">referrerPolicy="no-referrer"</code> sur toutes les ressources</li>
+            <li>• Images converties en <strong className="text-white">data-URI</strong> — aucune requête externe possible</li>
+          </ul>
+        </div>
+
+        <p className="text-xs text-[#444444] text-center">
+          Pour prévisualiser un fichier : importez une archive ZIP/RAR → cliquez sur un fichier dans l'arborescence
+        </p>
       </div>
     </div>
   )

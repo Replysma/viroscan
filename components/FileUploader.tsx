@@ -134,7 +134,7 @@ export default function FileUploader({ sessionId, onSuccess, compact = false }: 
         className={`drop-zone relative border-2 border-dashed rounded-2xl p-10 text-center cursor-pointer transition-all
           ${isDragging
             ? 'drag-over'
-            : 'border-[#2A2A2A] hover:border-[#3A3A3A] hover:bg-[#121212]'
+            : 'border-[#1A1A1A] hover:border-[#3A3A3A] hover:bg-[#0D0D0D]'
           }
           ${state !== 'idle' ? 'cursor-default' : ''}
         `}
@@ -149,23 +149,23 @@ export default function FileUploader({ sessionId, onSuccess, compact = false }: 
 
         {state === 'idle' && (
           <div className="space-y-4 animate-fade-in">
-            <div className="w-16 h-16 bg-[rgba(212,160,23,0.08)] border border-[rgba(212,160,23,0.2)] rounded-2xl flex items-center justify-center mx-auto">
-              <Upload size={28} className="text-[#D4A017]" />
+            <div className="w-16 h-16 bg-[rgba(225,173,1,0.08)] border border-[rgba(225,173,1,0.2)] rounded-2xl flex items-center justify-center mx-auto">
+              <Upload size={28} className="text-[#E1AD01]" />
             </div>
             <div>
               <p className="text-lg font-semibold text-white">
                 Déposez votre archive ici
               </p>
-              <p className="text-[#666666] text-sm mt-1">
-                ou <span className="text-[#D4A017]">cliquez pour parcourir</span>
+              <p className="text-[#555555] text-sm mt-1">
+                ou <span className="text-[#E1AD01]">cliquez pour parcourir</span>
               </p>
             </div>
             <div className="flex items-center justify-center gap-4">
-              <span className="flex items-center gap-1.5 text-xs text-[#666666]">
-                <Archive size={13} className="text-[#D4A017]" /> ZIP
+              <span className="flex items-center gap-1.5 text-xs text-[#555555]">
+                <Archive size={13} className="text-[#E1AD01]" /> ZIP
               </span>
-              <span className="flex items-center gap-1.5 text-xs text-[#666666]">
-                <Archive size={13} className="text-[#D4A017]" /> RAR
+              <span className="flex items-center gap-1.5 text-xs text-[#555555]">
+                <Archive size={13} className="text-[#E1AD01]" /> RAR
               </span>
               <span className="text-xs text-[#444444]">Max 50 Mo gratuit / 500 Mo premium</span>
             </div>
@@ -174,18 +174,18 @@ export default function FileUploader({ sessionId, onSuccess, compact = false }: 
 
         {state === 'uploading' && (
           <div className="space-y-5 animate-fade-in">
-            <div className="w-14 h-14 bg-[rgba(212,160,23,0.08)] rounded-2xl flex items-center justify-center mx-auto">
-              <Loader2 size={24} className="text-[#D4A017] animate-spin" />
+            <div className="w-14 h-14 bg-[rgba(225,173,1,0.08)] rounded-2xl flex items-center justify-center mx-auto">
+              <Loader2 size={24} className="text-[#E1AD01] animate-spin" />
             </div>
             <div>
               <p className="font-medium text-white truncate max-w-xs mx-auto">{fileName}</p>
-              <p className="text-sm text-[#666666] mt-1">
+              <p className="text-sm text-[#555555] mt-1">
                 {progress < 90 ? 'Import en cours...' : "Analyse de l'archive..."}
               </p>
             </div>
-            <div className="w-full max-w-xs mx-auto bg-[#2A2A2A] rounded-full h-1.5">
+            <div className="w-full max-w-xs mx-auto bg-[#1A1A1A] rounded-full h-1.5">
               <div
-                className="bg-[#D4A017] h-1.5 rounded-full transition-all duration-300"
+                className="bg-[#E1AD01] h-1.5 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -209,7 +209,7 @@ export default function FileUploader({ sessionId, onSuccess, compact = false }: 
             </div>
             <div>
               <p className="font-medium text-red-400">Échec de l'import</p>
-              <p className="text-sm text-[#666666] mt-1">{error}</p>
+              <p className="text-sm text-[#555555] mt-1">{error}</p>
             </div>
             <button
               onClick={(e) => { e.stopPropagation(); setState('idle'); setError('') }}

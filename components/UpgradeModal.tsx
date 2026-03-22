@@ -40,9 +40,9 @@ export default function UpgradeModal({ reason, onClose, remaining = 0, limit = 3
       />
 
       {/* Modal */}
-      <div className="relative card max-w-md w-full p-7 border-[rgba(212,160,23,0.3)] animate-slide-up">
+      <div className="relative card max-w-md w-full p-7 border-[rgba(225,173,1,0.3)] animate-slide-up">
         {/* Glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,160,23,0.07),transparent_60%)] pointer-events-none rounded-xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(225,173,1,0.07),transparent_60%)] pointer-events-none rounded-xl" />
 
         <button
           onClick={onClose}
@@ -53,10 +53,10 @@ export default function UpgradeModal({ reason, onClose, remaining = 0, limit = 3
 
         <div className="relative text-center space-y-5">
           {/* Icon */}
-          <div className="w-14 h-14 bg-[rgba(212,160,23,0.1)] border border-[rgba(212,160,23,0.25)] rounded-2xl flex items-center justify-center mx-auto">
+          <div className="w-14 h-14 bg-[rgba(225,173,1,0.1)] border border-[rgba(225,173,1,0.25)] rounded-2xl flex items-center justify-center mx-auto">
             {reason === 'rate_limit'
-              ? <Lock     size={24} className="text-[#D4A017]" />
-              : <ShieldCheck size={24} className="text-[#D4A017]" />}
+              ? <Lock     size={24} className="text-[#E1AD01]" />
+              : <ShieldCheck size={24} className="text-[#E1AD01]" />}
           </div>
 
           {/* Title */}
@@ -66,7 +66,7 @@ export default function UpgradeModal({ reason, onClose, remaining = 0, limit = 3
                 ? 'Limite journalière atteinte'
                 : 'Détails masqués'}
             </h3>
-            <p className="text-[#666666] text-sm">
+            <p className="text-[#555555] text-sm">
               {reason === 'rate_limit'
                 ? `Vous avez utilisé vos ${limit} analyses gratuites du jour. Revenez demain ou passez au Premium pour des analyses illimitées.`
                 : 'Les noms de fichiers suspects et les signatures exactes sont réservés aux utilisateurs Premium.'}
@@ -74,8 +74,8 @@ export default function UpgradeModal({ reason, onClose, remaining = 0, limit = 3
           </div>
 
           {reason === 'rate_limit' && (
-            <div className="bg-[#1A1A1A] rounded-lg px-4 py-2 text-sm">
-              <span className="text-[#666666]">Quota aujourd'hui : </span>
+            <div className="bg-[#131313] rounded-lg px-4 py-2 text-sm">
+              <span className="text-[#555555]">Quota aujourd'hui : </span>
               <span className="text-white font-medium">{limit - remaining}/{limit} analyses utilisées</span>
             </div>
           )}
@@ -88,8 +88,8 @@ export default function UpgradeModal({ reason, onClose, remaining = 0, limit = 3
               'Rapport VirusTotal détaillé',
               'Archives jusqu\'à 500 Mo',
             ].map(f => (
-              <li key={f} className="flex items-center gap-2 text-sm text-[#B3B3B3]">
-                <ShieldCheck size={14} className="text-[#D4A017] flex-shrink-0" />
+              <li key={f} className="flex items-center gap-2 text-sm text-[#AAAAAA]">
+                <ShieldCheck size={14} className="text-[#E1AD01] flex-shrink-0" />
                 {f}
               </li>
             ))}
