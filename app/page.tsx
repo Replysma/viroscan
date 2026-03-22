@@ -1,10 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Archive, Eye, Download, Shield, Zap, ArrowRight, Check, Star } from 'lucide-react'
+import { Archive, Eye, Download, Shield, Zap, ArrowRight, Check, Star, MessageSquare } from 'lucide-react'
 import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 import PricingTable from '@/components/PricingTable'
+import FeedbackModal from '@/components/FeedbackModal'
 
 const CLERK_ENABLED =
   !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
@@ -20,11 +22,24 @@ const FEATURES = [
 ]
 
 export default function LandingPage() {
+  const [showFeedback, setShowFeedback] = useState(false)
+
   return (
     <div className="min-h-screen text-white overflow-x-hidden">
 
+      {/* ── Barre feedback top ───────────────────────────────────────────────── */}
+      <div className="fixed top-0 inset-x-0 z-50 h-8 flex items-center justify-center bg-[#FFD700]">
+        <button
+          onClick={() => setShowFeedback(true)}
+          className="flex items-center gap-2 text-xs font-semibold text-black hover:opacity-75 transition-opacity"
+        >
+          <MessageSquare size={12} />
+          Donnez votre avis · Signalez un bug
+        </button>
+      </div>
+
       {/* ── Navigation ───────────────────────────────────────────────────────── */}
-      <nav className="fixed top-0 inset-x-0 z-50 h-16">
+      <nav className="fixed top-8 inset-x-0 z-50 h-16">
         {/* Fond glass */}
         <div className="absolute inset-0 bg-black/80 backdrop-blur-xl border-b border-white/[0.06]" />
         <div className="relative max-w-6xl mx-auto px-6 h-full flex items-center justify-between">
@@ -36,6 +51,14 @@ export default function LandingPage() {
 
           {/* Actions */}
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowFeedback(true)}
+              className="flex items-center gap-1.5 text-sm text-[#888888] hover:text-white border border-[#222222] hover:border-[#333333] px-3 py-1.5 rounded-lg transition-colors"
+            >
+              <MessageSquare size={13} />
+              Feedback
+            </button>
+
             {CLERK_ENABLED ? (
               <>
                 <Show when="signed-out">
@@ -63,7 +86,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
-      <section className="pt-40 pb-28 px-6 text-center relative">
+      <section className="pt-48 pb-28 px-6 text-center relative">
         {/* Halo central */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[radial-gradient(ellipse,rgba(255,215,0,0.12)_0%,transparent_65%)] pointer-events-none" />
 
@@ -247,6 +270,20 @@ export default function LandingPage() {
         </div>
         <p className="text-[#333333] text-sm">© 2025 ViroScan · Paiement sécurisé par Stripe</p>
       </footer>
+
+      {/* ── Bouton feedback flottant ──────────────────────────────────────────── */}
+      <button
+        onClick={() => setShowFeedback(true)}
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium text-black bg-[#FFD700] shadow-[0_0_20px_rgba(255,215,0,0.35)] hover:bg-[#ffe033] hover:shadow-[0_0_28px_rgba(255,215,0,0.5)] transition-all active:scale-95"
+      >
+        <MessageSquare size={15} />
+        Feedback
+      </button>
+
+      {/* ── Modal feedback ───────────────────────────────────────────────────── */}
+      {showFeedback && (
+        <FeedbackModal onClose={() => setShowFeedback(false)} />
+      )}
     </div>
   )
 }

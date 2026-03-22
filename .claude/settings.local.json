@@ -4,7 +4,8 @@
       "Bash(cd /tmp)",
       "Bash(python3 -c \":*)",
       "mcp__Claude_Preview__preview_start",
-      "Bash(node -e \":*)"
+      "Bash(node -e \":*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }
