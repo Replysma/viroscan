@@ -112,22 +112,26 @@ export function getFileIcon(filename: string, mimeType?: string): {
 
 // ─── Preview helpers ──────────────────────────────────────────────────────────
 
-export type PreviewType = 'text' | 'image' | 'pdf' | 'video' | 'audio' | 'unsupported'
+export type PreviewType = 'text' | 'image' | 'pdf' | 'docx' | 'xlsx' | 'video' | 'audio' | 'unsupported'
 
 const TEXT_EXTS = new Set([
   'txt', 'md', 'json', 'xml', 'yaml', 'yml', 'js', 'ts', 'jsx', 'tsx',
   'css', 'scss', 'html', 'htm', 'py', 'rb', 'go', 'rs', 'java', 'c',
-  'cpp', 'h', 'sh', 'bash', 'sql', 'env', 'gitignore', 'csv', 'log',
+  'cpp', 'h', 'sh', 'bash', 'sql', 'env', 'gitignore', 'log',
   'ini', 'toml', 'cfg', 'conf', 'cs', 'php', 'vue', 'svelte',
 ])
 
 const IMAGE_EXTS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'ico', 'bmp'])
+const DOCX_EXTS  = new Set(['docx', 'doc'])
+const XLSX_EXTS  = new Set(['xlsx', 'xls', 'ods', 'csv'])
 
 export function getPreviewType(filename: string): PreviewType {
   const ext = filename.split('.').pop()?.toLowerCase() || ''
-  if (TEXT_EXTS.has(ext)) return 'text'
+  if (TEXT_EXTS.has(ext))  return 'text'
   if (IMAGE_EXTS.has(ext)) return 'image'
-  if (ext === 'pdf') return 'pdf'
+  if (DOCX_EXTS.has(ext))  return 'docx'
+  if (XLSX_EXTS.has(ext))  return 'xlsx'
+  if (ext === 'pdf')        return 'pdf'
   if (['mp4', 'webm', 'ogg'].includes(ext)) return 'video'
   if (['mp3', 'wav', 'flac'].includes(ext)) return 'audio'
   return 'unsupported'

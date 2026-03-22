@@ -59,12 +59,12 @@ export default function FileTree({ archive, selectedPath, onSelect }: Props) {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="px-3 py-2.5 border-b border-[#242424]">
+      <div className="px-3 py-2.5 border-b border-[#1A1A1A]">
         <div className="flex items-center gap-2 mb-2">
-          <Archive size={14} className="text-[#D4A017] flex-shrink-0" />
+          <Archive size={14} className="text-[#E1AD01] flex-shrink-0" />
           <span className="text-sm font-medium text-white truncate">{archive.name}</span>
         </div>
-        <div className="flex gap-3 text-xs text-[#666666]">
+        <div className="flex gap-3 text-xs text-[#555555]">
           <span>{archive.fileCount} fichiers</span>
           <span>{archive.dirCount} dossiers</span>
           <span>{formatBytes(archive.totalSize)}</span>
@@ -72,7 +72,7 @@ export default function FileTree({ archive, selectedPath, onSelect }: Props) {
       </div>
 
       {/* Search */}
-      <div className="px-3 py-2 border-b border-[#242424]">
+      <div className="px-3 py-2 border-b border-[#1A1A1A]">
         <div className="relative">
           <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#555555]" />
           <input
@@ -96,7 +96,7 @@ export default function FileTree({ archive, selectedPath, onSelect }: Props) {
       <div className="flex-1 overflow-auto py-1">
         {filteredFiles ? (
           filteredFiles.length === 0 ? (
-            <p className="text-center text-[#666666] text-xs py-6">Aucun fichier trouvé</p>
+            <p className="text-center text-[#555555] text-xs py-6">Aucun fichier trouvé</p>
           ) : (
             filteredFiles.map(file => (
               <FileRow
@@ -152,10 +152,10 @@ function TreeNode({
           <span className="text-[#444444] flex-shrink-0">
             {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
           </span>
-          <span className="text-[#D4A017] flex-shrink-0">
+          <span className="text-[#E1AD01] flex-shrink-0">
             {isOpen ? <FolderOpen size={14} /> : <Folder size={14} />}
           </span>
-          <span className="text-sm text-[#B3B3B3] truncate flex-1">{entry.name}</span>
+          <span className="text-sm text-[#AAAAAA] truncate flex-1">{entry.name}</span>
           <button
             onClick={(e) => onDownload(e, entry)}
             className="opacity-0 group-hover:opacity-100 text-[#555555] hover:text-white flex-shrink-0 p-0.5"
@@ -213,12 +213,12 @@ function FileRow({
     >
       <span className="w-3.5 flex-shrink-0" />
       <span className={`flex-shrink-0 ${color}`}>{icon}</span>
-      <span className={`text-sm truncate flex-1 ${selected ? 'text-[#D4A017]' : 'text-[#B3B3B3]'}`}>
+      <span className={`text-sm truncate flex-1 ${selected ? 'text-[#E1AD01]' : 'text-[#AAAAAA]'}`}>
         {entry.name}
       </span>
       <div className="flex items-center gap-1 flex-shrink-0">
         {canPreview && (
-          <span className="opacity-0 group-hover:opacity-100 text-xs text-[#555555] bg-[#1A1A1A] px-1.5 py-0.5 rounded">
+          <span className="opacity-0 group-hover:opacity-100 text-xs text-[#555555] bg-[#131313] px-1.5 py-0.5 rounded">
             aperçu
           </span>
         )}

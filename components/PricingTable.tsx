@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, Zap, Loader2, Crown } from 'lucide-react'
+import { Check, Zap, Loader2, Crown, X } from 'lucide-react'
 import Link from 'next/link'
 
 const FREE_FEATURES = [
@@ -17,12 +17,8 @@ const PREMIUM_FEATURES = [
   "Jusqu'à 500 Mo par archive",
   'Analyses illimitées',
   'Détails complets des menaces',
-  'Hash des fichiers suspects',
-  'Rapport VirusTotal intégré',
-  'Aperçu PDF + tous formats',
   'Fichiers conservés 48h',
   'Historique étendu',
-  'Traitement prioritaire',
 ]
 
 interface Props {
@@ -32,6 +28,7 @@ interface Props {
 
 export default function PricingTable({ currentPlan = 'free', isLoggedIn = false }: Props) {
   const [isLoading, setIsLoading] = useState(false)
+  const [showAlreadyPremium, setShowAlreadyPremium] = useState(false)
 
   const handleCheckout = async () => {
     setIsLoading(true)
@@ -69,22 +66,50 @@ export default function PricingTable({ currentPlan = 'free', isLoggedIn = false 
   }
 
   return (
+    <>
+    {showAlreadyPremium && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+        <div className="relative bg-[#111111] border border-[rgba(225,173,1,0.3)] rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl">
+          <button
+            onClick={() => setShowAlreadyPremium(false)}
+            className="absolute top-4 right-4 text-[#555555] hover:text-[#AAAAAA] transition-colors"
+          >
+            <X size={18} />
+          </button>
+          <div className="flex flex-col items-center text-center gap-4">
+            <div className="w-14 h-14 bg-[rgba(225,173,1,0.1)] border border-[rgba(225,173,1,0.3)] rounded-2xl flex items-center justify-center">
+              <Crown size={26} className="text-[#E1AD01]" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white mb-1">Vous êtes déjà Premium</h3>
+              <p className="text-[#555555] text-sm">Vous bénéficiez déjà de toutes les fonctionnalités Premium. Profitez-en !</p>
+            </div>
+            <button
+              onClick={() => setShowAlreadyPremium(false)}
+              className="btn-primary w-full justify-center py-2.5 mt-2"
+            >
+              Continuer
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
     <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
 
       {/* ── Plan Gratuit ── */}
       <div className="card p-7 flex flex-col">
         <div className="mb-6">
-          <p className="text-xs text-[#666666] uppercase tracking-widest font-medium mb-2">Gratuit</p>
+          <p className="text-xs text-[#555555] uppercase tracking-widest font-medium mb-2">Gratuit</p>
           <div className="flex items-end gap-1">
             <span className="text-4xl font-bold text-white">0 €</span>
-            <span className="text-[#666666] mb-1">/mois</span>
+            <span className="text-[#555555] mb-1">/mois</span>
           </div>
-          <p className="text-sm text-[#666666] mt-2">Pour découvrir ZipView sans engagement</p>
+          <p className="text-sm text-[#555555] mt-2">Pour découvrir ZipView sans engagement</p>
         </div>
 
         <ul className="space-y-2.5 flex-1 mb-7">
           {FREE_FEATURES.map(f => (
-            <li key={f} className="flex items-start gap-2 text-sm text-[#B3B3B3]">
+            <li key={f} className="flex items-start gap-2 text-sm text-[#AAAAAA]">
               <Check size={15} className="text-[#555555] mt-0.5 flex-shrink-0" />
               {f}
             </li>
@@ -96,37 +121,37 @@ export default function PricingTable({ currentPlan = 'free', isLoggedIn = false 
             Plan actuel
           </Link>
         ) : (
-          <Link href="/dashboard" className="btn-ghost w-full justify-center py-2.5 border border-[#2A2A2A]">
+          <Link href="/dashboard" className="btn-ghost w-full justify-center py-2.5 border border-[#1A1A1A]">
             Continuer en gratuit
           </Link>
         )}
       </div>
 
       {/* ── Plan Premium ── */}
-      <div className="card p-7 flex flex-col border-[rgba(212,160,23,0.4)] relative overflow-hidden">
+      <div className="card p-7 flex flex-col border-[rgba(225,173,1,0.4)] relative overflow-hidden">
         {/* Badge populaire */}
         <div className="absolute top-0 right-0">
-          <div className="bg-[#D4A017] text-black text-xs font-bold px-4 py-1 rounded-bl-xl flex items-center gap-1">
+          <div className="bg-[#E1AD01] text-black text-xs font-bold px-4 py-1 rounded-bl-xl flex items-center gap-1">
             <Crown size={11} /> POPULAIRE
           </div>
         </div>
 
         {/* Glow subtil */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(212,160,23,0.06),transparent_60%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(225,173,1,0.06),transparent_60%)] pointer-events-none" />
 
         <div className="mb-6 relative">
-          <p className="text-xs text-[#D4A017] uppercase tracking-widest font-medium mb-2">Premium</p>
+          <p className="text-xs text-[#E1AD01] uppercase tracking-widest font-medium mb-2">Premium</p>
           <div className="flex items-end gap-1">
             <span className="text-4xl font-bold text-white">9.99 €</span>
-            <span className="text-[#666666] mb-1">/mois</span>
+            <span className="text-[#555555] mb-1">/mois</span>
           </div>
-          <p className="text-sm text-[#666666] mt-2">Analyses illimitées, détails complets</p>
+          <p className="text-sm text-[#555555] mt-2">Analyses illimitées, détails complets</p>
         </div>
 
         <ul className="space-y-2.5 flex-1 mb-7 relative">
           {PREMIUM_FEATURES.map(f => (
-            <li key={f} className="flex items-start gap-2 text-sm text-[#B3B3B3]">
-              <Check size={15} className="text-[#D4A017] mt-0.5 flex-shrink-0" />
+            <li key={f} className="flex items-start gap-2 text-sm text-[#AAAAAA]">
+              <Check size={15} className="text-[#E1AD01] mt-0.5 flex-shrink-0" />
               {f}
             </li>
           ))}
@@ -135,12 +160,10 @@ export default function PricingTable({ currentPlan = 'free', isLoggedIn = false 
         <div className="relative">
           {currentPlan === 'premium' ? (
             <button
-              onClick={handlePortal}
-              disabled={isLoading}
-              className="btn-secondary w-full justify-center py-2.5"
+              onClick={() => setShowAlreadyPremium(true)}
+              className="btn-primary w-full justify-center py-2.5 text-base glow-brand"
             >
-              {isLoading ? <Loader2 size={15} className="animate-spin" /> : null}
-              Gérer mon abonnement
+              <span className="flex items-center gap-2"><Zap size={15} /> Commencer — 9,99€/mois</span>
             </button>
           ) : isLoggedIn ? (
             <button
@@ -149,8 +172,8 @@ export default function PricingTable({ currentPlan = 'free', isLoggedIn = false 
               className="btn-primary w-full justify-center py-2.5 text-base glow-brand"
             >
               {isLoading
-                ? <><Loader2 size={15} className="animate-spin" /> Redirection...</>
-                : <><Zap size={15} /> Passer au Premium</>}
+                ? <span className="flex items-center gap-2"><Loader2 size={15} className="animate-spin" /> Redirection...</span>
+                : <span className="flex items-center gap-2"><Zap size={15} /> Passer au Premium</span>}
             </button>
           ) : (
             <button
@@ -159,8 +182,8 @@ export default function PricingTable({ currentPlan = 'free', isLoggedIn = false 
               className="btn-primary w-full justify-center py-2.5 text-base glow-brand"
             >
               {isLoading
-                ? <><Loader2 size={15} className="animate-spin" /> Redirection...</>
-                : <><Zap size={15} /> Commencer — 9.99€/mois</>}
+                ? <span className="flex items-center gap-2"><Loader2 size={15} className="animate-spin" /> Redirection...</span>
+                : <span className="flex items-center gap-2"><Zap size={15} /> Commencer — 9,99€/mois</span>}
             </button>
           )}
           <p className="text-xs text-[#444444] text-center mt-3">
@@ -169,5 +192,6 @@ export default function PricingTable({ currentPlan = 'free', isLoggedIn = false 
         </div>
       </div>
     </div>
+    </>
   )
 }

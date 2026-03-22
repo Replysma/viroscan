@@ -55,7 +55,7 @@ export default function HistoryPanel({ sessionId, onLoad }: Props) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 className="animate-spin text-[#D4A017]" size={24} />
+        <Loader2 className="animate-spin text-[#E1AD01]" size={24} />
       </div>
     )
   }
@@ -72,7 +72,7 @@ export default function HistoryPanel({ sessionId, onLoad }: Props) {
       {archives.length === 0 ? (
         <div className="card p-12 text-center">
           <FileArchive size={32} className="text-[#444444] mx-auto mb-3" />
-          <p className="text-[#B3B3B3] font-medium">Aucune archive pour le moment</p>
+          <p className="text-[#AAAAAA] font-medium">Aucune archive pour le moment</p>
           <p className="text-[#555555] text-sm mt-1">Importez un fichier ZIP ou RAR pour commencer</p>
         </div>
       ) : (
@@ -87,13 +87,13 @@ export default function HistoryPanel({ sessionId, onLoad }: Props) {
                 className={`card p-4 flex items-center gap-4 group transition-all
                   ${expired ? 'opacity-50' : ''}`}
               >
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-[rgba(212,160,23,0.08)] border border-[rgba(212,160,23,0.2)]">
-                  <Archive size={18} className="text-[#D4A017]" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-[rgba(225,173,1,0.08)] border border-[rgba(225,173,1,0.2)]">
+                  <Archive size={18} className="text-[#E1AD01]" />
                 </div>
 
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-white truncate">{archive.name}</p>
-                  <div className="flex items-center gap-3 text-xs text-[#666666] mt-0.5">
+                  <div className="flex items-center gap-3 text-xs text-[#555555] mt-0.5">
                     <span>{archive.fileCount} fichiers</span>
                     <span>{formatBytes(archive.size)}</span>
                     <span className="flex items-center gap-1">
