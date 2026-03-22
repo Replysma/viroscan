@@ -14,7 +14,7 @@ const hasClerkKeys =
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const content = (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body className="min-h-screen">
         {children}
       </body>

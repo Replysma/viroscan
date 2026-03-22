@@ -33,11 +33,19 @@ export default function PricingTable({ currentPlan = 'free', isLoggedIn = false 
   const handleCheckout = async () => {
     setIsLoading(true)
     try {
+      // Vérifie d'abord si l'utilisateur est déjà premium
+      const meRes  = await fetch('/api/me', { cache: 'no-store' })
+      const meData = await meRes.json()
+      if (meData.isPremium) {
+        setIsLoading(false)
+        setShowAlreadyPremium(true)
+        return
+      }
+
       const res  = await fetch('/api/stripe/checkout', { method: 'POST' })
       const data = await res.json()
       if (data.url) {
         window.location.assign(data.url)
-        // Ne pas reset isLoading : l'utilisateur quitte la page
       } else {
         alert(data.error || 'Erreur lors de la redirection vers le paiement')
         setIsLoading(false)
@@ -66,29 +74,29 @@ export default function PricingTable({ currentPlan = 'free', isLoggedIn = false 
   }
 
   return (
-    <>
+    <div>
     {showAlreadyPremium && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-        <div className="relative bg-[#111111] border border-[rgba(225,173,1,0.3)] rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm">
+        <div className="relative bg-[#000000] border border-[rgba(225,173,1,0.5)] rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl">
           <button
             onClick={() => setShowAlreadyPremium(false)}
-            className="absolute top-4 right-4 text-[#555555] hover:text-[#AAAAAA] transition-colors"
+            className="absolute top-4 right-4 text-[#555555] hover:text-white transition-colors"
           >
             <X size={18} />
           </button>
           <div className="flex flex-col items-center text-center gap-4">
-            <div className="w-14 h-14 bg-[rgba(225,173,1,0.1)] border border-[rgba(225,173,1,0.3)] rounded-2xl flex items-center justify-center">
+            <div className="w-14 h-14 bg-[rgba(225,173,1,0.1)] border border-[rgba(225,173,1,0.4)] rounded-2xl flex items-center justify-center">
               <Crown size={26} className="text-[#E1AD01]" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-white mb-1">Vous êtes déjà Premium</h3>
-              <p className="text-[#555555] text-sm">Vous bénéficiez déjà de toutes les fonctionnalités Premium. Profitez-en !</p>
+              <h3 className="text-xl font-bold text-white mb-2">Abonnement déjà actif.</h3>
+              <p className="text-[#AAAAAA] text-sm leading-relaxed">Vous avez déjà payé votre abonnement Premium. Profitez de vos analyses illimitées !</p>
             </div>
             <button
               onClick={() => setShowAlreadyPremium(false)}
               className="btn-primary w-full justify-center py-2.5 mt-2"
             >
-              Continuer
+              Fermer
             </button>
           </div>
         </div>
@@ -171,9 +179,10 @@ export default function PricingTable({ currentPlan = 'free', isLoggedIn = false 
               disabled={isLoading}
               className="btn-primary w-full justify-center py-2.5 text-base glow-brand"
             >
-              {isLoading
-                ? <span className="flex items-center gap-2"><Loader2 size={15} className="animate-spin" /> Redirection...</span>
-                : <span className="flex items-center gap-2"><Zap size={15} /> Passer au Premium</span>}
+              <span className="flex items-center gap-2">
+              {isLoading ? <Loader2 size={15} className="animate-spin" /> : <Zap size={15} />}
+              <span translate="no">{isLoading ? 'Redirection...' : 'Passer au Premium'}</span>
+            </span>
             </button>
           ) : (
             <button
@@ -181,9 +190,10 @@ export default function PricingTable({ currentPlan = 'free', isLoggedIn = false 
               disabled={isLoading}
               className="btn-primary w-full justify-center py-2.5 text-base glow-brand"
             >
-              {isLoading
-                ? <span className="flex items-center gap-2"><Loader2 size={15} className="animate-spin" /> Redirection...</span>
-                : <span className="flex items-center gap-2"><Zap size={15} /> Commencer — 9,99€/mois</span>}
+              <span className="flex items-center gap-2">
+                {isLoading ? <Loader2 size={15} className="animate-spin" /> : <Zap size={15} />}
+                <span translate="no">{isLoading ? 'Redirection...' : 'Commencer — 9,99€/mois'}</span>
+              </span>
             </button>
           )}
           <p className="text-xs text-[#444444] text-center mt-3">
@@ -192,6 +202,6 @@ export default function PricingTable({ currentPlan = 'free', isLoggedIn = false 
         </div>
       </div>
     </div>
-    </>
+    </div>
   )
 }
