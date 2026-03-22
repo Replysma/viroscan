@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-const TO     = process.env.FEEDBACK_EMAIL!
-
 export async function POST(req: NextRequest) {
   try {
     const { message, email } = await req.json()
@@ -12,9 +9,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Message requis' }, { status: 400 })
     }
 
+    const apiKey = process.env.RESEND_API_KEY
+    const to     = process.env.FEEDBACK_EMAIL
+
+    if (!apiKey || !to) {
+      console.warn('[Feedback] RESEND_API_KEY ou FEEDBACK_EMAIL non configuré')
+      return NextResponse.json({ ok: true }) // silencieux côté client
+    }
+
+    const resend = new Resend(apiKey)
+
     await resend.emails.send({
       from:    'ViroScan Feedback <onboarding@resend.dev>',
-      to:      TO,
+      to,
       subject: `[ViroScan] Nouveau feedback`,
       text: [
         `Expéditeur : ${email?.trim() || 'Anonyme'}`,
