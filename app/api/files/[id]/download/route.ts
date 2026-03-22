@@ -14,7 +14,7 @@ import { extractFileFromZip } from '@/lib/zipParser'
 import { extractFileFromRar } from '@/lib/rarParser'
 import { ArchiveEntry } from '@/types'
 
-export const runtime    = 'nodejs'
+export const runtime = 'nodejs'
 export const maxDuration = 60
 
 interface Params { params: Promise<{ id: string }> }
@@ -22,7 +22,7 @@ interface Params { params: Promise<{ id: string }> }
 export async function GET(request: Request, { params }: Params) {
   const { id } = await params
   try {
-    const url      = new URL(request.url)
+    const url = new URL(request.url)
     const filePath = url.searchParams.get('path') || ''
 
     if (!isSafeEntryPath(filePath || '.')) {
@@ -50,16 +50,16 @@ export async function GET(request: Request, { params }: Params) {
         const mimeType = archive.type === 'zip' ? 'application/zip' : 'application/x-rar-compressed'
         return new NextResponse(new Uint8Array(archiveBuffer), {
           headers: {
-            'Content-Type':        mimeType,
+            'Content-Type': mimeType,
             'Content-Disposition': `attachment; filename="${archive.name}"`,
-            'Content-Length':      String(archiveBuffer.length),
+            'Content-Length': String(archiveBuffer.length),
           },
         })
       }
 
       // Télécharger un sous-dossier en ZIP
       const allFiles = flattenTree(tree).filter(e => !e.isDirectory && e.path.startsWith(filePath))
-      const outZip   = new AdmZip()
+      const outZip = new AdmZip()
 
       for (const file of allFiles) {
         let fileBuffer: Buffer | null = null
@@ -74,13 +74,13 @@ export async function GET(request: Request, { params }: Params) {
       }
 
       const folderName = path.basename(filePath.replace(/\/$/, ''))
-      const zipBuffer  = outZip.toBuffer()
+      const zipBuffer = outZip.toBuffer()
 
       return new NextResponse(new Uint8Array(zipBuffer), {
         headers: {
-          'Content-Type':        'application/zip',
+          'Content-Type': 'application/zip',
           'Content-Disposition': `attachment; filename="${folderName}.zip"`,
-          'Content-Length':      String(zipBuffer.length),
+          'Content-Length': String(zipBuffer.length),
         },
       })
     }
@@ -102,9 +102,9 @@ export async function GET(request: Request, { params }: Params) {
 
     return new NextResponse(new Uint8Array(fileBuffer), {
       headers: {
-        'Content-Type':        mimeType,
+        'Content-Type': mimeType,
         'Content-Disposition': `attachment; filename="${filename}"`,
-        'Content-Length':      String(fileBuffer.length),
+        'Content-Length': String(fileBuffer.length),
       },
     })
   } catch (err) {
