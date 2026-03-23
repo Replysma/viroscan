@@ -17,6 +17,11 @@ export default function UpgradeModal({ reason, onClose, remaining = 0, limit = 3
     setLoading(true)
     try {
       const res  = await fetch('/api/stripe/checkout', { method: 'POST' })
+      if (!res.ok && res.headers.get('content-type')?.includes('text/html')) {
+        alert(`Erreur serveur (${res.status}) — consultez les logs Vercel.`)
+        setLoading(false)
+        return
+      }
       const data = await res.json()
       if (data.url) {
         window.location.assign(data.url)
@@ -25,8 +30,8 @@ export default function UpgradeModal({ reason, onClose, remaining = 0, limit = 3
         alert(data.error || 'Erreur')
         setLoading(false)
       }
-    } catch {
-      alert('Erreur réseau')
+    } catch (err: any) {
+      alert(`Erreur réseau : ${err?.message ?? 'veuillez réessayer.'}`)
       setLoading(false)
     }
   }

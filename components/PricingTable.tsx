@@ -43,6 +43,12 @@ export default function PricingTable({ currentPlan = 'free', isLoggedIn = false 
       }
 
       const res  = await fetch('/api/stripe/checkout', { method: 'POST' })
+      if (!res.ok && res.headers.get('content-type')?.includes('text/html')) {
+        // Vercel a renvoyé une page HTML d'erreur (500 non géré)
+        alert(`Erreur serveur (${res.status}) — consultez les logs Vercel pour plus de détails.`)
+        setIsLoading(false)
+        return
+      }
       const data = await res.json()
       if (data.url) {
         window.location.assign(data.url)
@@ -50,8 +56,8 @@ export default function PricingTable({ currentPlan = 'free', isLoggedIn = false 
         alert(data.error || 'Erreur lors de la redirection vers le paiement')
         setIsLoading(false)
       }
-    } catch {
-      alert('Erreur réseau, veuillez réessayer.')
+    } catch (err: any) {
+      alert(`Erreur réseau : ${err?.message ?? 'veuillez réessayer.'}`)
       setIsLoading(false)
     }
   }

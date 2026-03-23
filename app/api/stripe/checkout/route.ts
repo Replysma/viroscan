@@ -12,16 +12,10 @@ import { getAuth } from '@/lib/auth'
 export async function POST() {
   if (!process.env.STRIPE_SECRET_KEY) {
     return NextResponse.json(
-      { error: 'Stripe non configuré côté serveur.' },
+      { error: 'Stripe non configuré côté serveur (STRIPE_SECRET_KEY manquante).' },
       { status: 503 }
     )
   }
-
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-
-  // Récupérer l'userId pour l'attacher aux metadata Stripe
-  // (le webhook en a besoin pour activer le plan Premium)
-  const authCtx = await getAuth()
 
   const priceId =
     process.env.STRIPE_PRICE_ID_PREMIUM ??
@@ -34,6 +28,12 @@ export async function POST() {
     'http://localhost:3000'
 
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+
+    // Récupérer l'userId pour l'attacher aux metadata Stripe
+    // (le webhook en a besoin pour activer le plan Premium)
+    const authCtx = await getAuth()
+
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       line_items: [
@@ -54,9 +54,9 @@ export async function POST() {
     return NextResponse.json({ url: session.url })
 
   } catch (err: any) {
-    console.error('[stripe/checkout]', err.message)
+    console.error('[stripe/checkout] Erreur:', err.message, err.type ?? '')
     return NextResponse.json(
-      { error: 'Erreur lors de la création de la session de paiement.' },
+      { error: `Erreur lors de la création de la session de paiement : ${err.message}` },
       { status: 500 }
     )
   }
