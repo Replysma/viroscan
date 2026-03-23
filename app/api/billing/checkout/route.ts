@@ -10,7 +10,13 @@ import { requireStripe, STRIPE_PRICE_ID, APP_URL } from '@/lib/stripe'
 import { userRepo } from '@/lib/db'
 
 export async function POST() {
-  const authCtx = await getAuth()
+  let authCtx: Awaited<ReturnType<typeof getAuth>>
+  try {
+    authCtx = await getAuth()
+  } catch (err: any) {
+    console.error('[billing/checkout] Auth error:', err.message)
+    return NextResponse.json({ success: false, error: 'Erreur d\'authentification' }, { status: 500 })
+  }
   if (!authCtx) {
     return NextResponse.json({ success: false, error: 'Connexion requise' }, { status: 401 })
   }
