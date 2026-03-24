@@ -38,6 +38,9 @@
     "uuid": "^9.0.0",
     "xlsx": "^0.18.5"
   },
+  "engines": {
+    "node": "24.x"
+  },
   "devDependencies": {
     "@types/adm-zip": "^0.5.5",
     "@types/archiver": "^6.0.2",
