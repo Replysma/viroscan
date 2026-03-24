@@ -7,11 +7,12 @@ import FileTree from '@/components/FileTree'
 import FilePreview from '@/components/FilePreview'
 import HistoryPanel from '@/components/HistoryPanel'
 import { ArchiveInfo, ArchiveEntry } from '@/types'
-import { Archive, History, Upload, ShieldCheck, Eye } from 'lucide-react'
+import { Archive, History, Upload, ShieldCheck, Eye, ShieldAlert } from 'lucide-react'
 import ScanBadge from '@/components/ScanBadge'
 import Link from 'next/link'
+import PhishingPanel from '@/components/PhishingPanel'
 
-type Panel = 'upload' | 'history' | 'secure-info'
+type Panel = 'upload' | 'history' | 'secure-info' | 'phishing'
 
 export default function DashboardPage() {
   const [activePanel, setActivePanel] = useState<Panel>('upload')
@@ -79,6 +80,12 @@ export default function DashboardPage() {
             >
               <Eye size={16} /> Aperçu Sécurisé
             </button>
+            <button
+              onClick={() => setActivePanel('phishing')}
+              className={`nav-item ${activePanel === 'phishing' ? 'active' : ''}`}
+            >
+              <ShieldAlert size={16} /> Anti-Phishing
+            </button>
           </div>
 
           {/* Archive info in sidebar */}
@@ -116,6 +123,8 @@ export default function DashboardPage() {
             </div>
           ) : activePanel === 'secure-info' ? (
             <SecurePreviewInfo />
+          ) : activePanel === 'phishing' ? (
+            <PhishingPanel />
           ) : (
             <>
               {/* Left: upload + tree */}

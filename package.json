@@ -10,6 +10,7 @@
     "db:init": "node scripts/init-db.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
     "@aws-sdk/client-s3": "^3.1014.0",
     "@clerk/nextjs": "^7.0.6",
     "@vercel/analytics": "^2.0.1",

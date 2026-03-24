@@ -22,10 +22,11 @@ export async function POST() {
     process.env.STRIPE_PRICE_ID ??
     'price_1TDRH73bVgbiDW1sTw8v0daQ'
 
-  const baseUrl =
+  const baseUrl = (
     process.env.NEXT_PUBLIC_SITE_URL ??
     process.env.NEXT_PUBLIC_APP_URL ??
-    'http://localhost:3000'
+    'https://viroscan-8a9n.vercel.app'
+  ).replace(/\/$/, '') // retire le slash final si présent
 
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
