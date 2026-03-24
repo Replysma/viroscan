@@ -5,7 +5,11 @@
       "Bash(python3 -c \":*)",
       "mcp__Claude_Preview__preview_start",
       "Bash(node -e \":*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(\"c:/Users/Kirlow/Desktop/nat/.nvmrc\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }

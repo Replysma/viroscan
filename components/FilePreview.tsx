@@ -109,7 +109,7 @@ export default function FilePreview({ archiveId, archiveType, fileBuffer, file, 
           ? await extractFileFromRarClient(fileBuffer, file.path)
           : await extractFileFromZipClient(fileBuffer, file.path)
         if (!bytes) { setError('Fichier introuvable dans l\'archive'); return }
-        const blob = new Blob([bytes])
+        const blob = new Blob([bytes as Uint8Array<ArrayBuffer>])
         const url  = URL.createObjectURL(blob)
         const a    = document.createElement('a')
         a.href = url; a.download = file.name; a.click()
@@ -272,7 +272,7 @@ async function loadFromBuffer(
 
   // ── PDF → object URL ────────────────────────────────────────────────────────
   if (ext === '.pdf') {
-    const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }))
+    const url = URL.createObjectURL(new Blob([bytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' }))
     return { path: file.path, content: url, mimeType: 'application/pdf', isText: false, isBinary: true, size: bytes.length }
   }
 
