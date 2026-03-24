@@ -7,16 +7,16 @@
 /* ─── Tokens ─────────────────────────────────────────────────────────────────── */
 @layer base {
   :root {
-    --bg:          #000000;
+    --bg:          #080808;
     --surface:     #111111;
-    --surface-2:   #161616;
+    --surface-2:   #111111;
     --border:      #222222;
     --border-2:    #2A2A2A;
-    --brand:       #FFD700;
-    --brand-bright:#FFED4A;
-    --brand-deep:  #E6BE00;
-    --brand-glow:  rgba(255,215,0,0.25);
-    --brand-dim:   rgba(255,215,0,0.07);
+    --brand:       #C9A800;
+    --brand-bright:#D4B800;
+    --brand-deep:  #A88E00;
+    --brand-glow:  rgba(180,140,0,0.18);
+    --brand-dim:   rgba(180,140,0,0.05);
     --text-1:      #FFFFFF;
     --text-2:      #C0C0C0;
     --text-3:      #888888;
@@ -105,7 +105,7 @@
     box-shadow:
       0 1px 0 rgba(255,255,255,0.4) inset,
       0 -1px 0 rgba(0,0,0,0.2) inset,
-      0 4px 14px rgba(255,215,0,0.35),
+      0 4px 14px rgba(180,140,0,0.175),
       0 1px 3px rgba(0,0,0,0.3);
     transition: all 0.15s ease;
   }
@@ -125,7 +125,7 @@
     box-shadow:
       0 1px 0 rgba(255,255,255,0.5) inset,
       0 -1px 0 rgba(0,0,0,0.2) inset,
-      0 6px 22px rgba(255,215,0,0.5),
+      0 6px 22px rgba(180,140,0,0.25),
       0 2px 6px rgba(0,0,0,0.3);
     transform: translateY(-1px);
   }
@@ -298,8 +298,8 @@
 @keyframes fadeIn  { from { opacity: 0 } to { opacity: 1 } }
 @keyframes slideUp { from { transform: translateY(14px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
 @keyframes glowPulse {
-  0%,100% { box-shadow: 0 0 12px rgba(255,215,0,0.2) }
-  50%     { box-shadow: 0 0 28px rgba(255,215,0,0.45), 0 0 50px rgba(255,215,0,0.1) }
+  0%,100% { box-shadow: 0 0 12px rgba(180,140,0,0.1) }
+  50%     { box-shadow: 0 0 28px rgba(180,140,0,0.225), 0 0 50px rgba(180,140,0,0.05) }
 }
 @keyframes float {
   0%,100% { transform: translateY(0) }
@@ -312,9 +312,9 @@
 .animate-float    { animation: float     6s ease-in-out infinite }
 
 /* ─── Utilitaires ────────────────────────────────────────────────────────────── */
-.glow-brand    { box-shadow: 0 0 20px rgba(255,215,0,0.35), 0 0 40px rgba(255,215,0,0.1) }
-.glow-brand-sm { box-shadow: 0 0 12px rgba(255,215,0,0.25) }
-.glow-brand-lg { box-shadow: 0 0 40px rgba(255,215,0,0.4), 0 0 80px rgba(255,215,0,0.15) }
+.glow-brand    { box-shadow: 0 0 20px rgba(180,140,0,0.175), 0 0 40px rgba(180,140,0,0.05) }
+.glow-brand-sm { box-shadow: 0 0 12px rgba(180,140,0,0.125) }
+.glow-brand-lg { box-shadow: 0 0 40px rgba(180,140,0,0.2), 0 0 80px rgba(180,140,0,0.075) }
 
 /* Surface vitrée / glass */
 .glass {
@@ -332,8 +332,9 @@
 
 /* Texte gradient or */
 .text-gradient {
-  background: linear-gradient(135deg, #FFED4A 0%, #FFD700 50%, #E6BE00 100%);
+  background: linear-gradient(135deg, #D4B800 0%, #C9A800 50%, #A88E00 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: brightness(0.75);
 }

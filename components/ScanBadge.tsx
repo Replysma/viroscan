@@ -24,12 +24,27 @@ const POLL_INTERVAL_MS = 2_500
 const MAX_POLLS        = 30  // 75 secondes max de polling
 
 export default function ScanBadge({ archiveId, initialScanStatus = 'pending', autoStart = true, compact = false }: Props) {
+  // Les archives locales (parsées dans le navigateur) n'ont pas de record serveur
+  const isLocal = archiveId.startsWith('local:')
+
   const [state, setState] = useState<ScanState>({
-    status:   initialScanStatus,
+    status:   isLocal ? 'error' : initialScanStatus,
     result:   null,
     loading:  false,
     expanded: false,
   })
+
+  if (isLocal) {
+    if (compact) return null
+    return (
+      <div className="rounded-xl border border-slate-700 bg-slate-500/5 p-3 text-sm text-slate-400">
+        <div className="flex items-center gap-2">
+          <Shield size={16} />
+          <span>Analyse disponible via <strong>Analyse Virus</strong> dans le menu</span>
+        </div>
+      </div>
+    )
+  }
 
   // Lance le scan côté serveur
   const startScan = useCallback(async () => {

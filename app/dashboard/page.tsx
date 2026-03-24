@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Header from '@/components/Header'
 import FileUploader from '@/components/FileUploader'
 import FileTree from '@/components/FileTree'
@@ -19,6 +19,8 @@ export default function DashboardPage() {
   const [currentArchive, setCurrentArchive] = useState<ArchiveInfo | null>(null)
   const [selectedFile, setSelectedFile] = useState<ArchiveEntry | null>(null)
   const [sessionId, setSessionId] = useState<string>('')
+  // Stocke le buffer de l'archive courante pour extraction client-side
+  const fileBufferRef = useRef<ArrayBuffer | null>(null)
 
   useEffect(() => {
     // Persistent session ID for anonymous users
@@ -30,7 +32,8 @@ export default function DashboardPage() {
     setSessionId(sid)
   }, [])
 
-  const handleUploadSuccess = useCallback((archive: ArchiveInfo) => {
+  const handleUploadSuccess = useCallback((archive: ArchiveInfo, fileBuffer: ArrayBuffer) => {
+    fileBufferRef.current = fileBuffer
     setCurrentArchive(archive)
     setSelectedFile(null)
     setActivePanel('upload')
@@ -43,6 +46,7 @@ export default function DashboardPage() {
   }, [])
 
   const handleLoadFromHistory = useCallback((archive: ArchiveInfo) => {
+    fileBufferRef.current = null // archive serveur, pas de buffer local
     setCurrentArchive(archive)
     setSelectedFile(null)
     setActivePanel('upload')
@@ -168,6 +172,8 @@ export default function DashboardPage() {
                   {selectedFile ? (
                     <FilePreview
                       archiveId={currentArchive.id}
+                      archiveType={currentArchive.type}
+                      fileBuffer={fileBufferRef.current ?? undefined}
                       file={selectedFile}
                       onClose={() => setSelectedFile(null)}
                     />

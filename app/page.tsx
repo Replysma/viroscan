@@ -28,10 +28,10 @@ export default function LandingPage() {
     <div className="min-h-screen text-white overflow-x-hidden">
 
       {/* ── Barre feedback top ───────────────────────────────────────────────── */}
-      <div className="fixed top-0 inset-x-0 z-50 h-8 flex items-center justify-center bg-[#FFD700]">
+      <div className="fixed top-0 inset-x-0 z-50 h-8 flex items-center justify-center bg-[#1A1500] border-b border-[rgba(180,140,0,0.15)]">
         <button
           onClick={() => setShowFeedback(true)}
-          className="flex items-center gap-2 text-xs font-semibold text-black hover:opacity-75 transition-opacity"
+          className="flex items-center gap-2 text-xs font-semibold text-[#C9A800] hover:opacity-75 transition-opacity"
         >
           <MessageSquare size={12} />
           Donnez votre avis · Signalez un bug
