@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useRef, useCallback } from 'react'
+import { upload } from '@vercel/blob/client'
 import { Upload, Archive, Loader2, AlertCircle, CheckCircle2, X } from 'lucide-react'
 import { ArchiveInfo } from '@/types'
-import { formatBytes } from '@/lib/utils'
 
 interface Props {
   sessionId: string
@@ -27,46 +27,47 @@ export default function FileUploader({ sessionId, onSuccess, compact = false }: 
     setProgress(0)
     setError('')
 
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('sessionId', sessionId)
+    try {
+      // Étape 1 : upload direct depuis le navigateur vers Vercel Blob.
+      // Contourne la limite 4.5 MB des fonctions serverless Vercel.
+      setProgress(10)
+      const blob = await upload(file.name, file, {
+        access: 'public',
+        handleUploadUrl: '/api/upload/token',
+      })
+      setProgress(85)
 
-    // Simulate progress while uploading (XHR for progress events)
-    const xhr = new XMLHttpRequest()
+      setProgress(90)
 
-    xhr.upload.addEventListener('progress', (e) => {
-      if (e.lengthComputable) {
-        setProgress(Math.round((e.loaded / e.total) * 90))
-      }
-    })
+      // Étape 2 : envoi de l'URL blob au serveur pour parser l'archive et sauvegarder en DB.
+      const res = await fetch('/api/upload/process', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          blobUrl:   blob.url,
+          fileName:  file.name,
+          fileSize:  file.size,
+          sessionId,
+        }),
+      })
 
-    xhr.addEventListener('load', () => {
-      try {
-        const data = JSON.parse(xhr.responseText)
-        if (data.success) {
-          setProgress(100)
-          setState('success')
-          setTimeout(() => {
-            onSuccess(data.data)
-            setState('idle')
-          }, 800)
-        } else {
-          setError(data.error || "Échec de l'import")
-          setState('error')
-        }
-      } catch {
-        setError('Réponse inattendue du serveur')
+      const data = await res.json()
+
+      if (data.success) {
+        setProgress(100)
+        setState('success')
+        setTimeout(() => {
+          onSuccess(data.data)
+          setState('idle')
+        }, 800)
+      } else {
+        setError(data.error || "Échec de l'import")
         setState('error')
       }
-    })
-
-    xhr.addEventListener('error', () => {
-      setError('Erreur réseau. Veuillez réessayer.')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur réseau. Veuillez réessayer.')
       setState('error')
-    })
-
-    xhr.open('POST', '/api/upload')
-    xhr.send(formData)
+    }
   }, [sessionId, onSuccess])
 
   const handleFiles = useCallback((files: FileList | null) => {
@@ -180,7 +181,7 @@ export default function FileUploader({ sessionId, onSuccess, compact = false }: 
             <div>
               <p className="font-medium text-white truncate max-w-xs mx-auto">{fileName}</p>
               <p className="text-sm text-[#555555] mt-1">
-                {progress < 90 ? 'Import en cours...' : "Analyse de l'archive..."}
+                {progress < 85 ? 'Upload en cours...' : "Analyse de l'archive..."}
               </p>
             </div>
             <div className="w-full max-w-xs mx-auto bg-[#1A1A1A] rounded-full h-1.5">
