@@ -4,15 +4,15 @@ import Header from '@/components/Header'
 import PricingTable from '@/components/PricingTable'
 import TrustBanner from '@/components/TrustBanner'
 import SocialProof from '@/components/SocialProof'
-import { Zap, ShieldCheck, Archive, Clock } from 'lucide-react'
+import { Zap, ShieldCheck } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import { usePlan } from '@/hooks/usePlan'
 
 function PricingContent() {
-  const params  = useSearchParams()
-  const success  = params.get('upgrade') === 'success'
+  const params    = useSearchParams()
+  const success   = params.get('upgrade') === 'success'
   const cancelled = params.get('upgrade') === 'cancelled'
   const { isPremium, loaded } = usePlan()
 
@@ -27,8 +27,8 @@ function PricingContent() {
           <div className="rounded-xl border border-[rgba(225,173,1,0.35)] bg-[rgba(225,173,1,0.08)] px-6 py-4 flex items-center gap-3 animate-fade-in">
             <ShieldCheck size={20} className="text-[#E1AD01] flex-shrink-0" />
             <div>
-              <p className="font-semibold text-[#E1AD01]">Abonnement Premium activé !</p>
-              <p className="text-sm text-[#AAAAAA] mt-0.5">Vous avez maintenant accès aux analyses illimitées et aux détails complets.</p>
+              <p className="font-semibold text-[#E1AD01]">Abonnement Pro activé !</p>
+              <p className="text-sm text-[#AAAAAA] mt-0.5">Vous avez maintenant accès aux posts illimités et à toutes les fonctionnalités avancées.</p>
             </div>
           </div>
         )}
@@ -50,7 +50,7 @@ function PricingContent() {
             Choisissez votre plan
           </h1>
           <p className="text-[#555555] text-lg max-w-xl mx-auto">
-            Commencez gratuitement. Passez au Premium quand vous avez besoin de plus de puissance.
+            Commencez gratuitement. Passez au Pro quand vous avez besoin de plus de puissance.
           </p>
           <SocialProof />
         </div>
@@ -66,8 +66,9 @@ function PricingContent() {
               <thead>
                 <tr className="border-b border-[#1A1A1A]">
                   <th className="text-left px-6 py-4 text-[#555555] font-medium w-1/2">Fonctionnalité</th>
-                  <th className="text-center px-6 py-4 text-[#AAAAAA] font-medium">Gratuit</th>
-                  <th className="text-center px-6 py-4 text-[#E1AD01] font-medium">Premium</th>
+                  <th className="text-center px-6 py-4 text-[#AAAAAA] font-medium">Free</th>
+                  <th className="text-center px-6 py-4 text-[#E1AD01] font-medium">Pro</th>
+                  <th className="text-center px-6 py-4 text-[#AAAAAA] font-medium">Agency</th>
                 </tr>
               </thead>
               <tbody>
@@ -75,7 +76,8 @@ function PricingContent() {
                   <tr key={row.feature} className={`border-b border-[#1E1E1E] ${i % 2 === 0 ? '' : 'bg-[#0D0D0D]'}`}>
                     <td className="px-6 py-3.5 text-[#AAAAAA]">{row.feature}</td>
                     <td className="px-6 py-3.5 text-center">{renderCell(row.free)}</td>
-                    <td className="px-6 py-3.5 text-center">{renderCell(row.premium)}</td>
+                    <td className="px-6 py-3.5 text-center">{renderCell(row.pro)}</td>
+                    <td className="px-6 py-3.5 text-center">{renderCell(row.agency)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -105,7 +107,7 @@ function PricingContent() {
       </main>
 
       <footer className="border-t border-[#1A1A1A] py-8 text-center text-[#444444] text-sm">
-        <p>© 2025 ZipView — Paiement sécurisé par <span className="text-[#555555]">Stripe</span></p>
+        <p>© 2025 FlowSync — Paiement sécurisé par <span className="text-[#555555]">Stripe</span></p>
       </footer>
     </div>
   )
@@ -122,32 +124,31 @@ export default function PricingPage() {
 // ─── Data ──────────────────────────────────────────────────────────────────────
 
 const COMPARE_ROWS = [
-  { feature: 'Taille max archive',         free: '50 Mo',       premium: '500 Mo' },
-  { feature: 'Analyses antivirus / jour',  free: '3',           premium: 'Illimité' },
-  { feature: 'Statut de menace',           free: true,          premium: true },
-  { feature: 'Noms de fichiers suspects',  free: false,         premium: true },
-  { feature: 'Hashes et signatures',       free: false,         premium: true },
-  { feature: 'Rapport VirusTotal',         free: false,         premium: true },
-  { feature: 'Détection ZIP bomb',         free: true,          premium: true },
-  { feature: 'Aperçu texte & images',      free: true,          premium: true },
-  { feature: 'Aperçu PDF',                 free: false,         premium: true },
-  { feature: 'Durée de conservation',      free: '2h',          premium: '48h' },
-  { feature: 'Historique',                 free: 'Limité',      premium: 'Étendu' },
-  { feature: 'Traitement prioritaire',     free: false,         premium: true },
-  { feature: 'Support',                    free: 'Communauté',  premium: 'Prioritaire' },
+  { feature: 'Posts par mois',             free: '50',           pro: 'Illimité',    agency: 'Illimité' },
+  { feature: 'Comptes connectés',          free: '1',            pro: '5',           agency: 'Illimité' },
+  { feature: 'Scraping de hashtags',       free: 'Basique',      pro: 'Avancé',      agency: 'Avancé' },
+  { feature: 'Export des leads',           free: false,          pro: true,          agency: true },
+  { feature: 'Automatisations visuelles',  free: false,          pro: true,          agency: true },
+  { feature: 'Accès API',                  free: false,          pro: false,         agency: true },
+  { feature: 'White-label',                free: false,          pro: false,         agency: true },
+  { feature: 'Planification avancée',      free: false,          pro: true,          agency: true },
+  { feature: 'Analytiques',               free: 'Basique',      pro: 'Avancé',      agency: 'Avancé' },
+  { feature: 'Historique',                 free: '7 jours',      pro: '90 jours',    agency: 'Illimité' },
+  { feature: 'Onboarding personnalisé',    free: false,          pro: false,         agency: true },
+  { feature: 'Support',                    free: 'Communauté',   pro: 'Prioritaire', agency: 'Dédié' },
 ]
 
 const FAQ = [
   { q: 'Puis-je annuler à tout moment ?',
-    a: 'Oui. Vous pouvez annuler depuis votre portail client Stripe en un clic. Votre accès Premium reste actif jusqu\'à la fin de la période en cours.' },
-  { q: 'Mes fichiers sont-ils stockés après l\'analyse ?',
-    a: 'Non. Les fichiers sont supprimés automatiquement (2h pour le plan gratuit, 48h pour le Premium). Aucune copie n\'est conservée au-delà.' },
-  { q: 'Le plan gratuit est-il vraiment gratuit ?',
-    a: 'Oui, sans carte de crédit requise. La limite est de 3 analyses par 24h et 50 Mo par archive.' },
-  { q: 'Comment fonctionne la détection de menaces ?',
-    a: 'ZipView utilise une analyse heuristique (magic bytes, extensions, MIME mismatch) et peut optionnellement interroger l\'API VirusTotal pour les abonnés Premium.' },
-  { q: 'Quels formats sont acceptés ?',
-    a: 'ZIP et RAR pour l\'explorateur d\'archives. L\'analyseur antivirus accepte tous les types de fichiers.' },
+    a: 'Oui. Vous pouvez annuler depuis votre portail client Stripe en un clic. Votre accès Pro reste actif jusqu\'à la fin de la période en cours.' },
+  { q: 'FlowSync fonctionne-t-il sans installation ?',
+    a: 'Oui, FlowSync est 100% cloud. Aucun logiciel à installer, tout se passe depuis votre navigateur.' },
+  { q: 'Le plan Free est-il vraiment gratuit ?',
+    a: 'Oui, sans carte de crédit requise. Vous bénéficiez de 50 posts par mois et d\'un compte connecté.' },
+  { q: 'Comment fonctionne le scraping de tendances ?',
+    a: 'FlowSync analyse en temps réel les hashtags viraux, les comptes influents et les contenus performants sur TikTok et Instagram pour vous donner une longueur d\'avance.' },
+  { q: 'Puis-je connecter plusieurs comptes ?',
+    a: 'Oui. Le plan Pro permet de connecter jusqu\'à 5 comptes, et le plan Agency offre des comptes illimités.' },
 ]
 
 function renderCell(val: string | boolean) {

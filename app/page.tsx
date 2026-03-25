@@ -2,8 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-import { Archive, Eye, Download, Shield, Zap, ArrowRight, Check, Star, MessageSquare } from 'lucide-react'
+import { Calendar, Search, Zap, ArrowRight, Check, MessageSquare } from 'lucide-react'
 import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 import PricingTable from '@/components/PricingTable'
 import FeedbackModal from '@/components/FeedbackModal'
@@ -13,12 +12,21 @@ const CLERK_ENABLED =
   !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('XXXX')
 
 const FEATURES = [
-  { icon: Shield,   title: 'Analyse antivirus',    desc: 'Scannez chaque fichier de l\'archive avec un moteur de détection de menaces en temps réel.' },
-  { icon: Eye,      title: 'Aperçu universel',      desc: 'Prévisualisez PDF, Word, Excel, images et code directement dans le navigateur.' },
-  { icon: Archive,  title: 'ZIP & RAR natif',       desc: 'Support complet des archives ZIP et RAR, y compris les structures imbriquées complexes.' },
-  { icon: Download, title: 'Extraction sélective',  desc: 'Téléchargez uniquement les fichiers dont vous avez besoin, sans extraire toute l\'archive.' },
-  { icon: Zap,      title: 'Lecture seule sécurisée', desc: 'Tout contenu est converti côté serveur — aucun script ne s\'exécute sur votre machine.' },
-  { icon: Star,     title: 'Historique complet',    desc: 'Retrouvez toutes vos archives récentes, filtrez et rechargez en un clic.' },
+  {
+    icon: Calendar,
+    title: 'Bot de publication automatique',
+    desc: 'Planifiez et publiez automatiquement sur TikTok et Instagram. Définissez vos horaires, FlowSync fait le reste.',
+  },
+  {
+    icon: Search,
+    title: 'Scraper de tendances & leads',
+    desc: 'Extrayez les hashtags viraux, les comptes influents et les leads qualifiés en quelques clics.',
+  },
+  {
+    icon: Zap,
+    title: 'Alternative simple à Zapier',
+    desc: 'Créez des automatisations puissantes avec une interface visuelle. Connectez vos apps sans une ligne de code.',
+  },
 ]
 
 export default function LandingPage() {
@@ -27,15 +35,11 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen text-white overflow-x-hidden">
 
-      {/* ── Barre feedback top ───────────────────────────────────────────────── */}
+      {/* ── Barre d'annonce top ──────────────────────────────────────────────── */}
       <div className="fixed top-0 inset-x-0 z-50 h-8 flex items-center justify-center bg-[#1A1500] border-b border-[rgba(180,140,0,0.15)]">
-        <button
-          onClick={() => setShowFeedback(true)}
-          className="flex items-center gap-2 text-xs font-semibold text-[#C9A800] hover:opacity-75 transition-opacity"
-        >
-          <MessageSquare size={12} />
-          Donnez votre avis · Signalez un bug
-        </button>
+        <p className="text-xs font-semibold text-[#C9A800]">
+          ⚡ FlowSync est en beta — Rejoignez la liste d&apos;attente · Obtenez 3 mois gratuits
+        </p>
       </div>
 
       {/* ── Navigation ───────────────────────────────────────────────────────── */}
@@ -45,8 +49,10 @@ export default function LandingPage() {
         <div className="relative max-w-6xl mx-auto px-6 h-full flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <Image src="/logo.png" alt="ViroScan" width={56} height={56} unoptimized className="transition-opacity group-hover:opacity-80" />
-            <span className="font-bold text-[17px] tracking-tight">ViroScan</span>
+            <div className="w-8 h-8 rounded-xl bg-[#FFD000] flex items-center justify-center text-black font-extrabold text-base transition-opacity group-hover:opacity-80">
+              ⚡
+            </div>
+            <span className="font-bold text-[17px] tracking-tight">FlowSync</span>
           </Link>
 
           {/* Actions */}
@@ -78,7 +84,7 @@ export default function LandingPage() {
               </>
             ) : (
               <Link href="/dashboard" className="btn-primary text-sm px-5 py-2">
-                Ouvrir l'app <ArrowRight size={14} />
+                Ouvrir l&apos;app <ArrowRight size={14} />
               </Link>
             )}
           </div>
@@ -93,25 +99,23 @@ export default function LandingPage() {
         {/* Pill badge */}
         <div className="inline-flex items-center gap-2 mb-8 px-4 py-1.5 rounded-full text-sm font-medium text-[#FFD700] border border-[rgba(255,215,0,0.25)] bg-[rgba(255,215,0,0.06)] backdrop-blur-sm shadow-[0_0_20px_rgba(255,215,0,0.08)]">
           <span className="w-1.5 h-1.5 rounded-full bg-[#FFD700] shadow-[0_0_6px_#FFD700] animate-pulse" />
-          Analyse antivirus en temps réel
+          Automatisation en temps réel
         </div>
 
         {/* Titre */}
         <h1 className="text-5xl md:text-[68px] font-extrabold leading-[1.1] tracking-tight mb-6 max-w-4xl mx-auto">
-          Explorez & analysez<br />
-          vos archives en{' '}
-          <span className="text-gradient">toute sécurité</span>
+          Automatisez TikTok &amp; Instagram<br />
+          <span className="text-gradient">sans effort</span>
         </h1>
 
         <p className="text-lg md:text-xl text-[#888888] max-w-xl mx-auto mb-10 leading-relaxed">
-          Importez un ZIP ou RAR, scannez son contenu pour les virus,
-          prévisualisez chaque fichier — sans jamais rien télécharger.
+          Publiez automatiquement, scrapez les tendances, générez des leads — sans toucher à Zapier.
         </p>
 
         {/* CTA */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
           <Link href="/dashboard" className="btn-primary text-base px-7 py-3 rounded-2xl">
-            Analyser une archive <ArrowRight size={17} />
+            Commencer l&apos;automatisation <ArrowRight size={17} />
           </Link>
           {CLERK_ENABLED && (
             <Show when="signed-out">
@@ -127,9 +131,9 @@ export default function LandingPage() {
         {/* Stats */}
         <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-[#555555]">
           {[
-            { val: '50+',    label: 'formats prévisualisés' },
-            { val: '100%',   label: 'côté serveur' },
-            { val: '0',      label: 'installation requise' },
+            { val: '10K+',  label: 'posts publiés' },
+            { val: '100%',  label: 'no-code' },
+            { val: '0',     label: 'installation requise' },
           ].map(s => (
             <div key={s.label} className="text-center">
               <p className="text-2xl font-bold text-white">{s.val}</p>
@@ -156,7 +160,7 @@ export default function LandingPage() {
               </div>
               <div className="flex-1 mx-4">
                 <div className="bg-black/40 rounded-lg px-4 py-1.5 text-xs text-[#444444] font-mono w-fit mx-auto">
-                  viroscan.app/dashboard
+                  flowsync.app/dashboard
                 </div>
               </div>
             </div>
@@ -166,10 +170,10 @@ export default function LandingPage() {
               {/* Sidebar */}
               <div className="p-4 space-y-1">
                 {[
-                  { label: 'Importer',         active: false },
-                  { label: 'Analyse Virus',     active: true  },
-                  { label: 'Aperçu Sécurisé',  active: false },
-                  { label: 'Historique',        active: false },
+                  { label: 'Publier',       active: false },
+                  { label: 'Planification', active: true  },
+                  { label: 'Tendances',     active: false },
+                  { label: 'Leads',         active: false },
                 ].map(item => (
                   <div key={item.label}
                     className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${
@@ -185,16 +189,16 @@ export default function LandingPage() {
               {/* Main */}
               <div className="p-6 space-y-4">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-semibold text-white">malware-sample.zip</p>
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20">
-                    2 menaces détectées
+                  <p className="text-sm font-semibold text-white">Posts planifiés cette semaine</p>
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    12 actifs
                   </span>
                 </div>
                 {[
-                  { name: 'document.pdf',      status: 'clean',    color: 'text-emerald-400' },
-                  { name: 'invoice.exe',        status: 'infecté',  color: 'text-red-400' },
-                  { name: 'readme.txt',         status: 'clean',    color: 'text-emerald-400' },
-                  { name: 'update_patch.dll',   status: 'suspect',  color: 'text-amber-400' },
+                  { name: 'TikTok — Vidéo tendance #1',    status: 'Publié',    color: 'text-emerald-400' },
+                  { name: 'Instagram — Reel promotionnel',  status: 'Planifié',  color: 'text-amber-400' },
+                  { name: 'TikTok — Tutorial produit',      status: 'Planifié',  color: 'text-amber-400' },
+                  { name: 'Instagram — Story engagement',   status: 'Brouillon', color: 'text-[#555555]' },
                 ].map(f => (
                   <div key={f.name} className="flex items-center justify-between px-4 py-3 rounded-xl bg-black/30 border border-white/[0.04]">
                     <span className="text-sm font-mono text-[#AAAAAA]">{f.name}</span>
@@ -212,7 +216,7 @@ export default function LandingPage() {
         <div className="text-center mb-16">
           <p className="text-sm font-semibold text-[#FFD700] uppercase tracking-widest mb-4">Fonctionnalités</p>
           <h2 className="text-4xl font-bold tracking-tight">Tout ce dont vous avez besoin</h2>
-          <p className="text-[#666666] mt-4 max-w-lg mx-auto">Un outil complet pour explorer, analyser et prévisualiser vos archives en toute sécurité.</p>
+          <p className="text-[#666666] mt-4 max-w-lg mx-auto">L&apos;automatisation sociale, sans la complexité.</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-5">
@@ -238,7 +242,7 @@ export default function LandingPage() {
         <div className="text-center mb-14">
           <p className="text-sm font-semibold text-[#FFD700] uppercase tracking-widest mb-4">Tarifs</p>
           <h2 className="text-4xl font-bold tracking-tight">Simple et transparent</h2>
-          <p className="text-[#555555] mt-4">Commencez gratuitement, passez au premium quand vous en avez besoin.</p>
+          <p className="text-[#555555] mt-4">Commencez gratuitement, passez au Pro quand vous en avez besoin.</p>
         </div>
         <PricingTable />
       </section>
@@ -249,7 +253,7 @@ export default function LandingPage() {
           <div className="rounded-3xl border border-white/[0.06] p-8 text-center"
                style={{ background: 'linear-gradient(135deg, #141414, #0e0e0e)' }}>
             <div className="flex flex-wrap justify-center gap-8 text-sm">
-              {['Paiement sécurisé Stripe', 'Aucun fichier conservé au-delà de 48h', 'Analyse 100% côté serveur', 'HTTPS uniquement'].map(t => (
+              {['Paiement sécurisé Stripe', 'Données chiffrées en transit', '100% no-code', 'Sans installation'].map(t => (
                 <div key={t} className="flex items-center gap-2 text-[#666666]">
                   <Check size={14} className="text-[#FFD700]" />
                   {t}
@@ -263,12 +267,12 @@ export default function LandingPage() {
       {/* ── Footer ───────────────────────────────────────────────────────────── */}
       <footer className="border-t border-white/[0.05] py-10 text-center">
         <div className="flex items-center justify-center gap-2 mb-3">
-          <div className="w-6 h-6 rounded-lg bg-[#FFD700] flex items-center justify-center">
-            <Shield size={12} className="text-black" />
+          <div className="w-6 h-6 rounded-lg bg-[#FFD700] flex items-center justify-center text-black text-xs font-bold">
+            ⚡
           </div>
-          <span className="font-semibold text-white text-sm">ViroScan</span>
+          <span className="font-semibold text-white text-sm">FlowSync</span>
         </div>
-        <p className="text-[#333333] text-sm">© 2025 ViroScan · Paiement sécurisé par Stripe</p>
+        <p className="text-[#333333] text-sm">© 2025 FlowSync · Paiement sécurisé par Stripe</p>
       </footer>
 
       {/* ── Bouton feedback flottant ──────────────────────────────────────────── */}
